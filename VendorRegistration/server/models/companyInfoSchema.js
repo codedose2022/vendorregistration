@@ -5,106 +5,110 @@ dotenv.config();
 
 const companyInfoSchema = mongoose.Schema(
   {
+    comments:{
+      type:Object,
+      default:null
+    },
     vendorType: [[String]],
-    vendorTypeC: {
-      type: String,
-      default: "",
-    },
+    // vendorTypeC: {
+    //   type: String,
+    //   default: "",
+    // },
     orgStructure: String,
-    orgStructureC: {
-      type: String,
-      default: "",
-    },
+    // orgStructureC: {
+    //   type: String,
+    //   default: "",
+    // },
     companyName: [String],
-    companyNameC: {
-      type: String,
-      default: "",
-    },
+    // companyNameC: {
+    //   type: String,
+    //   default: "",
+    // },
     licenseNo: [Number],
-    licenseNoC: {
-      type: String,
-      default: "",
-    },
+    // licenseNoC: {
+    //   type: String,
+    //   default: "",
+    // },
     yearOfEst: [Number],
-    yearOfEstC: {
-      type: String,
-      default: "",
-    },
+    // yearOfEstC: {
+    //   type: String,
+    //   default: "",
+    // },
     licenseExpDate: [Date],
-    licenseExpDateC: {
-      type: String,
-      default: "",
-    },
+    // licenseExpDateC: {
+    //   type: String,
+    //   default: "",
+    // },
     licenseCopy: String,
-    licenseCopyC: {
-      type: String,
-      default: "",
-    },
+    // licenseCopyC: {
+    //   type: String,
+    //   default: "",
+    // },
     address1: [String],
-    address1C: {
-      type: String,
-      default: "",
-    },
+    // address1C: {
+    //   type: String,
+    //   default: "",
+    // },
     address2: [String],
-    address2C: {
-      type: String,
-      default: "",
-    },
+    // address2C: {
+    //   type: String,
+    //   default: "",
+    // },
     city: [String],
-    cityC: {
-      type: String,
-      default: "",
-    },
+    // cityC: {
+    //   type: String,
+    //   default: "",
+    // },
     emirates: [String],
-    emiratesC: {
-      type: String,
-      default: "",
-    },
+    // emiratesC: {
+    //   type: String,
+    //   default: "",
+    // },
     country: [String],
-    countryC: {
-      type: String,
-      default: "",
-    },
+    // countryC: {
+    //   type: String,
+    //   default: "",
+    // },
     poBox: [Number],
-    poBoxC: {
-      type: String,
-      default: "",
-    },
+    // poBoxC: {
+    //   type: String,
+    //   default: "",
+    // },
     email: [String],
-    emailC: {
-      type: String,
-      default: "",
-    },
+    // emailC: {
+    //   type: String,
+    //   default: "",
+    // },
     website: [String],
-    websiteC: {
-      type: String,
-      default: "",
-    },
+    // websiteC: {
+    //   type: String,
+    //   default: "",
+    // },
     phoneNo: [Number],
-    phoneNoC: {
-      type: String,
-      default: "",
-    },
+    // phoneNoC: {
+    //   type: String,
+    //   default: "",
+    // },
     faxNo: [Number],
-    faxNoC: {
-      type: String,
-      default: "",
-    },
+    // faxNoC: {
+    //   type: String,
+    //   default: "",
+    // },
     mobileNo: [Number],
-    mobileNoC: {
-      type: String,
-      default: "",
-    },
+    // mobileNoC: {
+    //   type: String,
+    //   default: "",
+    // },
     noOfEmp: [Number],
-    noOfEmpC: {
-      type: String,
-      default: "",
-    },
+    // noOfEmpC: {
+    //   type: String,
+    //   default: "",
+    // },
     sisCompanies: [[String]],
-    sisCompaniesC: {
-      type: String,
-      default: "",
-    },
+    // sisCompaniesC: {
+    //   type: String,
+    //   default: "",
+    // },
     status: {
       type: String,
       default:"saved",

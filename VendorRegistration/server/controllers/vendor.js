@@ -51,4 +51,23 @@ export const initialSave = async (req, res) => {
   }
 };
 
+export const addComments = async (req, res) => {
+
+  try {
+    const vendorReg = await vendorRegistrations.findOne({ _id: req.body.vendorId });
+    console.log(vendorReg);
+    
+    const fieldName = Object.keys(req.body)[0];
+    const fieldValue = Object.values(req.body)[0];
+    const sectionName = req.body.sectionName;
+
+   vendorReg.companyInfo.comments[vendorType] = fieldValue;
+   await vendorReg.save();
+    
+
+  } catch (error) {
+    
+  }
+}
+
 export default router;
