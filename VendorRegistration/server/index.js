@@ -3,29 +3,17 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import auth from "./routes/authentication.js";
-import serviceRequests from "./routes/serviceRequests.js";
-import adminActions from "./routes/admin.js";
-import path from 'path';
+import vendor from "./routes/vendor.js";
 
 dotenv.config();
 
 const app = express();
-// app.use(express.static(path.join('./', 'build')));
-
-// app.get('*', function (req, res) {
-// res.sendFile('index.html', { root: './build' });
-// });
 
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 
 app.use(cors());
-
-app.use("/auth", auth);
-app.use("/serviceRequests", serviceRequests);
-app.use("/adminActions", adminActions);
-
+app.use('/vendor',vendor);
 
 const PORT = process.env.PORT || 8000;
 mongoose
@@ -42,3 +30,4 @@ mongoose
   .catch((error) => console.log(`${error} did not connect`));
 
 mongoose.set("useFindAndModify", false);
+ 
