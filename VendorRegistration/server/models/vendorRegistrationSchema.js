@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import companyInfo from "./companyInfoSchema.js";
-// import ownersInfoSchema from "./ownersInfoSchema.js";
-// import bankInfoSchema from "./bankInfoSchema.js";
-// import taxInfoSchema from "./taxInfoSchema.js";
+import ownersInfoSchema from "./ownersInfoSchema.js";
+import bankInfoSchema from "./bankInfoSchema.js";
+import taxInfoSchema from "./taxInfoSchema.js";
 // import certificatesInfoSchema from "./certificatesInfoSchema.js";
-// import productsInfoSchema from "./productsInfoSchema.js";
-// import contactInfoSchema from "./contactInfoSchema.js";
-// import otherInfoSchema from "./otherInfoSchema.js";
+import productsInfoSchema from "./productsInfoSchema.js";
+import contactInfoSchema from "./contactInfoSchema.js";
+import otherInfoSchema from "./otherInfoSchema.js";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -22,13 +22,13 @@ const vendorRegistrationSchema = mongoose.Schema(
       ref: "initRegistrationsSchema",
     },
     companyInfo: companyInfo.schema,
-    // ownersInfo: ownersInfoSchema,
-    // bankInfo: bankInfoSchema,
-    // taxInfo: taxInfoSchema,
+    ownersInfo: [ownersInfoSchema],
+    bankInfo: bankInfoSchema,
+    taxInfo: taxInfoSchema,
     // certificatesInfo: certificatesInfoSchema,
-    // productsInfo: [productsInfoSchema],
-    // contactInfo: [contactInfoSchema],
-    // otherInfo: otherInfoSchema,
+    productsInfo: [productsInfoSchema],
+    contactInfo: [contactInfoSchema],
+    otherInfo: otherInfoSchema,
   },
   { timestamps: true }
 );
