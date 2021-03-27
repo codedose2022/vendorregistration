@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const ownersInfoSchema = mongoose.Schema(
+const ownerInfoSchema = mongoose.Schema(
   {
     comments:{
       type:Object,
@@ -16,14 +16,14 @@ const ownersInfoSchema = mongoose.Schema(
     tel: [Number],
     mob: [Number],
     email: [String],
-    status: {
-      type: String,
-      default:"saved",
-    },
-  },
+    // status: {
+    //   type: String,
+    //   default:"saved",
+    // },
+  },{ minimize: false },
   { timestamps: true }
 );
 
-const ownersInfo = mongoose.model("ownersInfo", ownersInfoSchema);
+const ownerInfo = mongoose.model("ownerInfo", ownerInfoSchema);
 
-export default ownersInfo;
+export default ownerInfo;

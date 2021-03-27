@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import companyInfo from "./companyInfoSchema.js";
-import ownersInfoSchema from "./ownersInfoSchema.js";
+import ownerInfoSchema from "./ownerInfoSchema.js";
 import bankInfoSchema from "./bankInfoSchema.js";
 import taxInfoSchema from "./taxInfoSchema.js";
-// import certificatesInfoSchema from "./certificatesInfoSchema.js";
-import productsInfoSchema from "./productsInfoSchema.js";
+import certificateInfoSchema from "./certificateInfoSchema.js";
+import productInfoSchema from "./productInfoSchema.js";
 import contactInfoSchema from "./contactInfoSchema.js";
 import otherInfoSchema from "./otherInfoSchema.js";
 
@@ -22,14 +22,29 @@ const vendorRegistrationSchema = mongoose.Schema(
       ref: "initRegistrationsSchema",
     },
     companyInfo: companyInfo.schema,
-    ownersInfo: [ownersInfoSchema],
-    bankInfo: bankInfoSchema,
-    taxInfo: taxInfoSchema,
-    // certificatesInfo: certificatesInfoSchema,
-    productsInfo: [productsInfoSchema],
-    contactInfo: [contactInfoSchema],
-    otherInfo: otherInfoSchema,
+
+    ownerInfo: {
+      status: {
+        type: String,
+        default: "saved",
+      },
+      owners: [ownerInfoSchema.schema],
+    },
+    bankInfo: bankInfoSchema.schema,
+    taxInfo: taxInfoSchema.schema,
+    certificateInfo: certificateInfoSchema.schema,
+    productInfo: productInfoSchema.schema,
+
+    contactInfo: {
+      status: {
+        type: String,
+        default: "saved",
+      },
+      contacts: [contactInfoSchema.schema],
+    },
+    otherInfo: otherInfoSchema.schema,
   },
+  { minimize: false },
   { timestamps: true }
 );
 

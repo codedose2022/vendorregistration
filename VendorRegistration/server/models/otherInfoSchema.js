@@ -19,7 +19,7 @@ const otherInfoSchema = mongoose.Schema(
       type: String,
       default:"saved",
     },
-  },
+  },{ minimize: false },
   { timestamps: true }
 );
 

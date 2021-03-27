@@ -1,24 +1,39 @@
 import express from "express";
 import vendorRegistrations from "../models/vendorRegistrationSchema.js";
-import initRegistrations from "../models/initRegistrationSchema.js";
+import responseMessageConstants from "../constants/responseMessage.js";
+import responseStatusConstants from "../constants/responseStatusCode.js";
+import _ from "lodash";
 
 const router = express.Router();
 
 export const initialSave = async (req, res) => {
+  //pass vendorId in req if its saved before.
   let responseData = {};
   const reqKey = Object.keys(req.body)[0];
   const reqValue = Object.values(req.body)[0];
-
+  let keyValuePair = {};
   try {
     const vendorId = req.body.vendorId ? req.body.vendorId : "";
-    const keyValuePair = {
-      [reqKey]: reqValue,
-    };
-
+    if (reqKey === "contactInfo") {
+      keyValuePair = {
+        "contactInfo.contacts": reqValue,
+        "contactInfo.status": "saved",
+      };
+    } else if (reqKey === "ownerInfo") {
+      keyValuePair = {
+        "ownerInfo.owners": reqValue,
+        "ownerInfo.status": "saved",
+      };
+    } else {
+      keyValuePair = {
+        [reqKey]: reqValue,
+      };
+    }
+    //if vendorId is present, update the document for fields as per in req
     if (vendorId !== "") {
       const entries = Object.keys(keyValuePair);
 
-      const updates = {};
+      let updates = {};
       for (let i = 0; i < entries.length; i++) {
         updates[entries[i]] = Object.values(keyValuePair)[i];
       }
@@ -30,44 +45,91 @@ export const initialSave = async (req, res) => {
           $set: updates,
         }
       );
-
+      responseData.message = responseMessageConstants.UPDATED;
+      responseData.status = responseStatusConstants.SUCCESS;
     } else {
+      // if vendorId is not present, i.e its initial save, create a new document
       const regData = {
-        status: "New",
+        status: "new",
         initRegId: req.body.initRegId,
         [reqKey]: reqValue,
       };
+
       const vendorReg = new vendorRegistrations(regData);
       await vendorReg.save();
+      responseData.message = responseMessageConstants.SAVED;
+      responseData.status = responseStatusConstants.SUCCESS;
     }
     const vendorRegistrationsList = await vendorRegistrations.find({
       initRegId: req.body.initRegId,
     });
     responseData.vendorRegistrationsList = vendorRegistrationsList;
-    responseData.message="Done";
+
     return res.status(200).json(responseData);
   } catch (error) {
-    return res.status(404).json(error.message);
+    responseData.status = responseStatusConstants.FAILURE;
+    responseData.message = error.message;
+    return res.status(404).json(responseData);
   }
 };
 
-export const addComments = async (req, res) => {
-
+export const submit = async (req, res) => {
+  /* req format 
+  {
+    "vendorId": "605aced40e24a239548ade4a"
+} */
+  let responseData = {};
   try {
-    const vendorReg = await vendorRegistrations.findOne({ _id: req.body.vendorId });
-    console.log(vendorReg);
-    
-    const fieldName = Object.keys(req.body)[0];
-    const fieldValue = Object.values(req.body)[0];
-    const sectionName = req.body.sectionName;
+    let status = "";
+    await vendorRegistrations
+      .findOne({
+        _id: req.body.vendorId,
+      })
+      .then((vendorRegistrationsList) => {
+        let currentStatus = vendorRegistrationsList.status;
+        if (currentStatus === "new") {
+          status = "submitted";
+        } else if (currentStatus === "incomplete") {
+          status = "under review";
+        }
+      });
 
-   vendorReg.companyInfo.comments[vendorType] = fieldValue;
-   await vendorReg.save();
-    
-
+    await vendorRegistrations.updateOne(
+      { _id: req.body.vendorId },
+      {
+        $set: {
+          status: status,
+        },
+      }
+    );
+    responseData.message = responseMessageConstants.SUBMITTED;
+    responseData.status = responseStatusConstants.SUCCESS;
+    return res.status(200).json(responseData);
   } catch (error) {
-    
+    responseData.status = responseStatusConstants.FAILURE;
+    responseData.message = responseMessageConstants.INVALID_ID;
+    return res.status(404).json(responseData);
   }
-}
+};
+
+export const getAllRegistrations = async (req, res) => {
+  /* req format 
+  {
+    "initRegId": "6059ba940450373cb05c39b1"
+} */
+  let responseData = {};
+  try {
+    const vendorRegistrationsList = await vendorRegistrations.find({
+      initRegId: req.body.initRegId,
+    });
+    responseData.vendorRegistrationsList = vendorRegistrationsList;
+    responseData.status = responseStatusConstants.SUCCESS;
+    return res.status(200).json(responseData);
+  } catch (error) {
+    responseData.status = responseStatusConstants.FAILURE;
+    responseData.message = responseMessageConstants.INVALID_ID;
+    return res.status(404).json(responseData);
+  }
+};
 
 export default router;

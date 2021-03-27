@@ -5,9 +5,9 @@ dotenv.config();
 
 const contactInfoSchema = mongoose.Schema(
   {
-    comments:{
-      type:Object,
-      default:{}
+    comments: {
+      type: Object,
+      default: {},
     },
     inChargeFor: [String],
     title: [String],
@@ -18,11 +18,8 @@ const contactInfoSchema = mongoose.Schema(
     tel: [Number],
     email: [String],
     altEmail: [String],
-    status: {
-      type: String,
-      default:"saved",
-    },
   },
+  { minimize: false },
   { timestamps: true }
 );
 

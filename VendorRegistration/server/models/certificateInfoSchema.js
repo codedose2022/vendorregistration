@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const certificatesInfoSchema = mongoose.Schema(
+const certificateInfoSchema = mongoose.Schema(
   {
     comments:{
       type:Object,
@@ -33,10 +33,10 @@ const certificatesInfoSchema = mongoose.Schema(
       type: String,
       default:"saved",
     },
-  },
+  },{ minimize: false },
   { timestamps: true }
 );
 
-const certificatesInfo = mongoose.model("certificatesInfo", certificatesInfoSchema);
+const certificateInfo = mongoose.model("certificateInfo", certificateInfoSchema);
 
-export default certificatesInfo;
+export default certificateInfo;

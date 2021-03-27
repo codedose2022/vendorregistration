@@ -1,9 +1,16 @@
 import express from "express";
-import { initialSave, addComments } from "../controllers/vendor.js";
+import {
+  initialSave,
+  submit,
+  getAllRegistrations,
+} from "../controllers/vendor.js";
 
 const router = express.Router();
 
 router.post("/initialSave", initialSave);
-router.post("/addComments", addComments);
+
+router.post("/submit", submit);
+
+router.post("/getAllRegistrations", getAllRegistrations);
 
 export default router;

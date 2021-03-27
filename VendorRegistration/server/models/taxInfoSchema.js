@@ -16,7 +16,7 @@ const taxInfoSchema = mongoose.Schema(
       type: String,
       default:"saved",
     },
-  },
+  },{ minimize: false },
   { timestamps: true }
 );
 
