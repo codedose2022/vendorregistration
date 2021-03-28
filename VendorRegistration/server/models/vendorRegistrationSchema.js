@@ -34,7 +34,6 @@ const vendorRegistrationSchema = mongoose.Schema(
     taxInfo: taxInfoSchema.schema,
     certificateInfo: certificateInfoSchema.schema,
     productInfo: productInfoSchema.schema,
-
     contactInfo: {
       status: {
         type: String,

@@ -16,10 +16,7 @@ const ownerInfoSchema = mongoose.Schema(
     tel: [Number],
     mob: [Number],
     email: [String],
-    // status: {
-    //   type: String,
-    //   default:"saved",
-    // },
+
   },{ minimize: false },
   { timestamps: true }
 );

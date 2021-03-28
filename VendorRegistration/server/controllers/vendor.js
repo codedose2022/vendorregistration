@@ -8,6 +8,7 @@ const router = express.Router();
 
 export const initialSave = async (req, res) => {
   //pass vendorId in req if its saved before.
+  //initRegId in req.body
   let responseData = {};
   const reqKey = Object.keys(req.body)[0];
   const reqValue = Object.values(req.body)[0];
@@ -64,7 +65,6 @@ export const initialSave = async (req, res) => {
       initRegId: req.body.initRegId,
     });
     responseData.vendorRegistrationsList = vendorRegistrationsList;
-
     return res.status(200).json(responseData);
   } catch (error) {
     responseData.status = responseStatusConstants.FAILURE;
@@ -107,7 +107,7 @@ export const submit = async (req, res) => {
     return res.status(200).json(responseData);
   } catch (error) {
     responseData.status = responseStatusConstants.FAILURE;
-    responseData.message = responseMessageConstants.INVALID_ID;
+    responseData.message = error.message;
     return res.status(404).json(responseData);
   }
 };
@@ -127,9 +127,34 @@ export const getAllRegistrations = async (req, res) => {
     return res.status(200).json(responseData);
   } catch (error) {
     responseData.status = responseStatusConstants.FAILURE;
-    responseData.message = responseMessageConstants.INVALID_ID;
+    responseData.message = error.message;
     return res.status(404).json(responseData);
   }
 };
 
+export const uploadFile = async (req, res) => {
+  let responseData = {};
+
+  try {
+    const reqKey = `${req.body.sectionName}.${req.header("fieldName")}`;
+    let updates = {
+      [reqKey]: req.file.filename,
+    };
+    await vendorRegistrations.updateOne(
+      {
+        _id: req.header("vendorId"),
+      },
+      {
+        $set: updates,
+      }
+    );
+
+    responseData.status = responseStatusConstants.SUCCESS;
+    return res.status(200).json(responseData);
+  } catch (error) {
+    responseData.status = responseStatusConstants.FAILURE;
+    responseData.message = error.message;
+    return res.status(404).json(responseData);
+  }
+};
 export default router;
