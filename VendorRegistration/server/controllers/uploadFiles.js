@@ -18,7 +18,7 @@ export const storage = multer.diskStorage({
 });
 
 export const fileFilter = (req, file, cb) => {
-  const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png"];
+  const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png","application/pdf","application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
   if (allowedFileTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
