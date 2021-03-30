@@ -21,6 +21,7 @@ const vendorRegistrationSchema = mongoose.Schema(
       type: schema.Types.ObjectId,
       ref: "initRegistrationsSchema",
     },
+    companyDetailId:String, 
     companyInfo: companyInfo.schema,
 
     ownerInfo: {

@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import vendor from "./routes/vendor.js";
+import register from "./routes/initialRegister.js";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 
 app.use(cors());
 app.use('/vendor',vendor);
+app.use('/register',register);
 
 const PORT = process.env.PORT || 8000;
 mongoose

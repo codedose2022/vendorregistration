@@ -53,6 +53,7 @@ export const initialSave = async (req, res) => {
       const regData = {
         status: "new",
         initRegId: req.body.initRegId,
+        companyDetailId:req.body.companyId,
         [reqKey]: reqValue,
       };
 
