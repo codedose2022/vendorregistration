@@ -13,10 +13,7 @@ dotenv.config();
 const schema = mongoose.Schema;
 const vendorRegistrationSchema = mongoose.Schema(
   {
-    status: {
-      type: String,
-      default: "saved",
-    },
+    status: String,
     initRegId: {
       type: schema.Types.ObjectId,
       ref: "initRegistrationsSchema",

@@ -3,9 +3,6 @@ import validator from "validator";
 import bcryptjs from "bcryptjs";
 import * as dotenv from "dotenv";
 dotenv.config();
-
-const salt = await bcryptjs.genSalt();
-const passwordHash = await bcryptjs.hash("Welcome123", salt);
 const schema = mongoose.Schema;
 
 const companyDetailSchema = mongoose.Schema({
@@ -13,6 +10,7 @@ const companyDetailSchema = mongoose.Schema({
   licenseNo: [String],
   licenseExpDt: [Date],
   licenseCopy: String,
+  category:[String],
   status: {
     type: String,
 
@@ -27,15 +25,10 @@ const initRegistrationSchema = mongoose.Schema(
     designation: [String],
     email: [String],
     mobNo: [Number],
-
     username: {
       type: String,
     },
-    password: {
-      type: String,
-      select: false,
-      default: passwordHash,
-    },
+    password: String,
     resetToken: String,
     expireToken: Date,
     companyDetail: [companyDetailSchema],

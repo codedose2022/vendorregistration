@@ -47,6 +47,7 @@ export const initialRegister = async (req, res) => {
         sendEmail(req.body.email, req.body.fName, "InitialRegistration", null);
       });
       responseData.status = responseStatusConstants.SUCCESS;
+      responseData.message = responseMessageConstants.INITIAL_REGISTER_SUCCESS;
       return res.status(200).json(responseData);
     }
   } catch (error) {
@@ -71,8 +72,10 @@ export const addNewCompany = async (req, res) => {
       },
       {
         $push: regData,
-      } 
+      } ,
+      {new: true}
     ).then((result) => {
+      console.log(result);
       sendEmail(result.email[0], result.fName[0], "InitialRegistration", null);
     });
     
