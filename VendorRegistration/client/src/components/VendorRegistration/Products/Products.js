@@ -69,9 +69,6 @@ const Products = () => {
     });
     if (!flag) {
       setAddedProduct((currentProducts) => [...currentProducts, products]);
-      // setFilteredResult(
-      //   filteredResult.filter((product) => product !== products)
-      // );
       setProductExists(false);
     }
 

@@ -30,36 +30,42 @@ import _ from "lodash";
 const Certification = () => {
   const classes = useStyles();
 
-  const [addCommentModal, setAddCommentModal] = useState(false);  
-  const [isVat, setIsVat] = useState(false);
-  const [vatName, setVatName] = useState("");
+  const [addCommentModal, setAddCommentModal] = useState(false);
+  const [isFile, setIsFile] = useState(false);
+  const [fileName, setFileName] = useState([]);
   const [open, setOpen] = useState({});
   const [certType, setCertType] = useState([
-    {"qualityPolicyStatement": ""},
-    {"qualityPolicyStatementEvid": ""},
-    {"qualityCertificateIso": ""},
-    {"qmsManual": ""},
-    {"orgChart": ""},
-    {"isoMandatoryProcedure": ""},
-    {"legalComplianceReg": ""},
-    {"calibCert": ""},
-    {"corruptPolicy": ""},
-    {"codeOfConduct": ""},
-    {"cyberSecPolicy": ""},
-    {"hsePolicy": ""},
-    {"hseManual": ""},
-    {"hseOrgChart": ""},
-    {"hseLawsReg": ""},
-    {"hseCert": ""},
-    {"emergencyEvac": ""},
-    {"hseStatitics": ""},
-    {"riskRegister": ""},
-    {"safeOprtnProcedure": ""},
-  ])
+    { qualityPolicyStatement: "" },
+    { qualityPolicyStatementEvid: "" },
+    { qualityCertificateIso: "" },
+    { qmsManual: "" },
+    { orgChart: "" },
+    { isoMandatoryProcedure: "" },
+    { legalComplianceReg: "" },
+    { calibCert: "" },
+    { corruptPolicy: "" },
+    { codeOfConduct: "" },
+    { cyberSecPolicy: "" },
+    { hsePolicy: "" },
+    { hseManual: "" },
+    { hseOrgChart: "" },
+    { hseLawsReg: "" },
+    { hseCert: "" },
+    { emergencyEvac: "" },
+    { hseStatitics: "" },
+    { riskRegister: "" },
+    { safeOprtnProcedure: "" },
+  ]);
   const handleMenuOpen = (e, certificate, index) => {
-    let key =  index
-    setOpen(prev=> ({...prev,[key] : e.target.value}
-    ));
+    setOpen((prev) => ({ ...prev, [index]: e.target.value }));
+
+    if (!e.target.value) {
+      let key = Object.keys(certType[index])[0];
+      let newArr = [...certType]; // copying the old datas array
+
+      newArr[index][key] = "";
+      setCertType(newArr);
+    }
   };
 
   const handleCommentModal = () => {
@@ -70,15 +76,18 @@ const Certification = () => {
     setAddCommentModal(false);
   };
   const handleVatName = () => {
-    setIsVat(true);
+    setIsFile(true);
   };
-const handleVatUpload = (e, index) => {
+
+  const handleFileUpload = (e, index) => {
     const filename = e.target.files[0].name;
-    setVatName(filename);
-    let key =  index;
-    // setCertType(prev=> ([...prev,[certType[key]] : e.target.file[0]])
-    console.log([{certType}])   
-  };
+    let key = Object.keys(certType[index])[0];
+    let newArr = [...certType]; // copying the old datas array
+    newArr[index][key] = filename;
+    setCertType(newArr);
+    console.log(certType[index][Object.keys(certType[index])[0]])
+  }
+  
   const formik = useFormik({
     initialValues: {
       vatNo: "",
@@ -127,8 +136,10 @@ const handleVatUpload = (e, index) => {
                                 className={classes.certSelect}
                                 fullWidth
                               >
-                                <InputLabel id={`select${index}`}>Select</InputLabel>
-                               
+                                <InputLabel id={`select${index}`}>
+                                  Select
+                                </InputLabel>
+
                                 <Select
                                   defaultValue=""
                                   key={`select${index}`}
@@ -144,51 +155,59 @@ const handleVatUpload = (e, index) => {
                             </TableCell>
                             <TableCell align="left">
                               {_.get(open, `${index}`, false) ? (
-                                <FormControl className={classes.formControl} fullWidth>
-                                <TextField
-                                  label={!isVat ? "" : vatName}
-                                  disabled
-                                  id="licenseCopy"
-                                  name="licenseCopy"
-                                  InputProps={{
-                                    endAdornment: (
-                                      <>
-                                        <InputAdornment position="end">
-                                          <Tooltip title="Add comment">
-                                            <Button
-                                              onClick={handleCommentModal}
-                                              size="small"
-                                              component="label"
-                                              className={classes.btnOnInput}
-                                            >
-                                              <CommentIcon />
-                                            </Button>
-                                          </Tooltip>
-                                        </InputAdornment>
-                                        <InputAdornment position="end">
-                                          <Tooltip title="Upload VAT certificate">
-                                            <Button
-                                              onClick={handleVatName}
-                                              id="license"
-                                              size="small"
-                                              component="label"
-                                              className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
-                                            >
-                                              <AttachFileIcon />
-                                              <input
-                                                type="file"
-                                                hidden
-                                                onChange={(e) => handleVatUpload(e)}
-                                              />
-                                            </Button>
-                                          </Tooltip>
-                                        </InputAdornment>
-                                      </>
-                                    ),
-                                  }}
-                                />
-                              </FormControl>
-                              ):  <div>no upload</div>}
+                                <FormControl
+                                  className={classes.formControl}
+                                  fullWidth
+                                >
+                                  <TextField
+                                    // label={!isFile ? "" : "d"}
+                                    value={certType[index][Object.keys(certType[index])[0]]}
+                                    disabled
+                                    id="licenseCopy"
+                                    name="licenseCopy"
+                                    InputProps={{
+                                      endAdornment: (
+                                        <>
+                                          <InputAdornment position="end">
+                                            <Tooltip title="Add comment">
+                                              <Button
+                                                onClick={handleCommentModal}
+                                                size="small"
+                                                component="label"
+                                                className={classes.btnOnInput}
+                                              >
+                                                <CommentIcon />
+                                              </Button>
+                                            </Tooltip>
+                                          </InputAdornment>
+                                          <InputAdornment position="end">
+                                            <Tooltip title="Upload VAT certificate">
+                                              <Button
+                                                onClick={handleVatName}
+                                                id="license"
+                                                size="small"
+                                                component="label"
+                                                className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
+                                              >
+                                                <AttachFileIcon />
+                                                <input
+                                                  type="file"
+                                                  hidden
+                                                  onChange={(e) =>
+                                                    handleFileUpload(e, index)
+                                                  }
+                                                />
+                                              </Button>
+                                            </Tooltip>
+                                          </InputAdornment>
+                                        </>
+                                      ),
+                                    }}
+                                  />
+                                </FormControl>
+                              ) : (
+                                <div></div>
+                              )}
                             </TableCell>
                           </TableRow>
                         );
