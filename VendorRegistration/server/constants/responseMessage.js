@@ -19,7 +19,8 @@ const responseMessageConstants = {
   SAVED: "Saved successfully.",
   UPDATED: "Saved successfully.",
   APPROVED : "Approved successfully" ,
-  SUBMITTED : "Submitted successfully"
+  SUBMITTED : "Submitted successfully",
+  INITIAL_REGISTER_SUCCESS : "You have registered successfully. "
    
 }
 export default responseMessageConstants; 

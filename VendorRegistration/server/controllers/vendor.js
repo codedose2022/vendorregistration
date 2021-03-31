@@ -53,7 +53,7 @@ export const initialSave = async (req, res) => {
       const regData = {
         status: "new",
         initRegId: req.body.initRegId,
-        companyDetailId:req.body.companyId,
+        companyDetailId: req.body.companyId,
         [reqKey]: reqValue,
       };
 
@@ -75,7 +75,7 @@ export const initialSave = async (req, res) => {
 };
 
 export const submit = async (req, res) => {
-  /* req format 
+  /* req format  
   {
     "vendorId": "605aced40e24a239548ade4a"
 } */
@@ -95,14 +95,26 @@ export const submit = async (req, res) => {
         }
       });
 
-    await vendorRegistrations.updateOne(
-      { _id: req.body.vendorId },
-      {
-        $set: {
-          status: status,
+    await vendorRegistrations
+      .findOneAndUpdate(
+        { _id: req.body.vendorId },
+        {
+          $set: {
+            status: status,
+          },
         },
-      }
-    );
+        {new: true},
+        {
+          fields: {
+            'ownerInfo': 1,
+    
+          
+        } }
+      )
+      .then((result) => {
+        responseData.vendorRegistrationsList = result;
+      });
+
     responseData.message = responseMessageConstants.SUBMITTED;
     responseData.status = responseStatusConstants.SUCCESS;
     return res.status(200).json(responseData);
@@ -114,7 +126,7 @@ export const submit = async (req, res) => {
 };
 
 export const getAllRegistrations = async (req, res) => {
-  /* req format 
+  /* req format  (call initialSave api before save)
   {
     "initRegId": "6059ba940450373cb05c39b1"
 } */
