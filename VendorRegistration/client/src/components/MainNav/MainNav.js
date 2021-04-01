@@ -8,17 +8,20 @@ import {
   Avatar,
   Typography,
   Divider,
-  Icon,
   Button,
+  TextField,
+  Grid,
+  FormControl,
+  InputAdornment,
+  Tooltip,
 } from "@material-ui/core";
-import HomeIcon from "@material-ui/icons/Home";
-import SettingsIcon from "@material-ui/icons/Settings";
 import logo from "../../images/logo.png";
 import { withStyles } from "@material-ui/core/styles";
 import useStyles from "./MainNavStyles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SideBarDashboard from "../Sidebar/SideBar";
-
+import ModalPop from "../Modal/ModalPop";
+import AttachFileIcon from "@material-ui/icons/AttachFile";
 
 const StyledMenu = withStyles({
   paper: {
@@ -47,6 +50,15 @@ const MainNavBar = (props) => {
   const open = Boolean(anchorEl);
   const company = ["Mersat Consultants", "Mersat Tansports"];
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [newCompanyModal, setNewCompanyModal] = useState(false);
+  const [isLicense, setIsLicense] = useState(false);
+  const [licenseName, setLicenseName] = useState("");
+
+
+  const handleLicenseName = () => {
+    setIsLicense(true);
+  };
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -56,6 +68,21 @@ const MainNavBar = (props) => {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleAddCompanyModal = () => {
+    setNewCompanyModal(true);
+    setAnchorEl(null);
+  };
+
+  const handleModalClose = () => {
+    setNewCompanyModal(false);
+  };
+
+  const handleLicenseUpload = (e) => {
+    let filename = e.target.files[0].name;
+    setIsLicense(true);
+    setLicenseName(filename);
   };
 
   return (
@@ -102,36 +129,35 @@ const MainNavBar = (props) => {
               }}
             >
               <div className={classes.popverAvatar}>
-                <Avatar>
+                <Avatar className={classes.large}>
                   <Typography>MC</Typography>
                 </Avatar>
               </div>
+
+              <Divider />
               <div className={classes.popoverTitle}>
-                <Icon>
-                  <HomeIcon />
-                </Icon>
                 <Typography>Companies</Typography>
               </div>
-              <Divider />
               {company.map((cmpny, index) => {
-                return <MenuItem key={index}>{cmpny}</MenuItem>;
+                return (
+                  <MenuItem key={index} className={classes.menuItem}>
+                    {cmpny}
+                  </MenuItem>
+                );
               })}
 
               <Divider />
 
               <div className={classes.popoverTitle}>
-                <Icon>
-                  <SettingsIcon />
-                </Icon>
                 <Typography>Settings</Typography>
               </div>
-              <Divider />
-              <MenuItem>Change password</MenuItem>
+              <MenuItem className={classes.menuItem}>Change password</MenuItem>
               <Divider />
               <div className={classes.popoverBtnPanel}>
                 <Button
                   color="primary"
                   variant="contained"
+                  onClick={handleAddCompanyModal}
                   className={`${classes.capsuleBtn} ${classes.tiny}`}
                 >
                   Add new Company
@@ -148,8 +174,79 @@ const MainNavBar = (props) => {
           </div>
         </Toolbar>
       </AppBar>
-      
-      <SideBarDashboard mobileOpen={mobileOpen} setMobileOpen = {setMobileOpen} />
+
+      <SideBarDashboard mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+
+      <ModalPop
+        title="Add New Company"
+        isOpen={newCompanyModal}
+        handleClose={handleModalClose}
+        content={
+          <form>
+            <Grid container>
+              <Grid item xs={12}>
+                <FormControl fullWidth className={classes.formControl}>
+                  <TextField
+                    id="companyName"
+                    name="companyName"
+                    label="Company name"
+                    type="text"
+                  />
+                </FormControl>
+                <FormControl fullWidth className={classes.formControl}>
+                  <TextField
+                    id="licenseNo"
+                    name="licenseNo"
+                    label="License number"
+                    type="text"
+                  />
+                </FormControl>
+                <FormControl fullWidth className={classes.formControl}>
+                  <TextField
+                    InputLabelProps={{ shrink: true }}
+                    id="licenseExpDt"
+                    name="licenseExpDt"
+                    type="date"
+                    label="License expiry date"
+                  />
+                </FormControl>
+                <FormControl className={classes.formControl} fullWidth>
+                  <TextField
+                    label={!isLicense ? "License copy" : licenseName}
+                    disabled
+                    id="licenseCopy"
+                    name="licenseCopy"
+                    InputProps={{
+                      endAdornment: (
+                        <>
+                          <InputAdornment position="end">
+                            <Tooltip title="Upload License">
+                              <Button
+                                onClick={handleLicenseName}
+                                id="license"
+                                size="small"
+                                component="label"
+                                className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
+                              >
+                                <AttachFileIcon />
+                                <input
+                                  type="file"
+                                  hidden
+                                  onChange={(e) => handleLicenseUpload(e)}
+                                />
+                              </Button>
+                            </Tooltip>
+                          </InputAdornment>
+                        </>
+                      ),
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
+          </form>
+        }
+      />
     </>
   );
 };

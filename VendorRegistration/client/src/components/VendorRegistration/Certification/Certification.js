@@ -17,7 +17,7 @@ import useStyles from "../VendorRegistrationStyles";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import ModalPop from "../Modal/ModalPop";
+import ModalPop from "../../Modal/ModalPop";
 import Certifications from "../../../Constants/Certifications";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 import _ from "lodash";

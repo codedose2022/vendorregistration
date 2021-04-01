@@ -22,7 +22,7 @@ import Close from "@material-ui/icons/Close";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import ModalPop from "../Modal/ModalPop";
+import ModalPop from "../../Modal/ModalPop";
 
 const Company = () => {
   const classes = useStyles();

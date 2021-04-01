@@ -13,7 +13,7 @@ import {
 import React, { useState } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import SearchIcon from "@material-ui/icons/Search";
-import ModalPop from "../Modal/ModalPop";
+import ModalPop from "../../Modal/ModalPop";
 import ProductsServices from "../../../Constants/ProductsServices";
 import DoneIcon from "@material-ui/icons/Done";
 import Close from "@material-ui/icons/Close";

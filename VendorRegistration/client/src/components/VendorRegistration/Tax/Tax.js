@@ -18,7 +18,7 @@ import useStyles from "../VendorRegistrationStyles";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import ModalPop from "../Modal/ModalPop";
+import ModalPop from "../../Modal/ModalPop";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 
 const Tax = () => {

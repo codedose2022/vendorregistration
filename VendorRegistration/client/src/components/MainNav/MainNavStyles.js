@@ -34,7 +34,7 @@ export default makeStyles((theme) => ({
     padding: "1rem",
   },
   popoverTitle: {
-    padding: "1rem 1rem",
+    padding: ".5rem 1rem",
     display: "flex",
     alignItems: "center",
     color: theme.palette.secondary.dark,
@@ -43,6 +43,9 @@ export default makeStyles((theme) => ({
       marginRight: ".25rem",
       color: theme.palette.secondary,
     },
+    "& p": {
+      textTransform: 'uppercase', fontSize: '.875rem'
+    },
   },
   popoverBtnPanel: {
     padding: "1rem",
@@ -50,11 +53,11 @@ export default makeStyles((theme) => ({
     justifyContent: "space-between",
   },
   tiny: {
-    padding: "2px 6px !important",
+    padding: "4px 8px !important",
     fontSize: "12px !important",
   },
   capsuleBtn: {
-    borderRadius: "25px !important",
+    borderRadius: "5px !important",
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -62,5 +65,40 @@ export default makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       display: "none !important",
     },
+  },
+  menuItem:{
+    fontSize: '.875rem',
+    padding: '.5rem 1.5rem',
+  },
+  fileUploadBtn: {
+    minWidth: "2rem",
+    width: "2rem",
+    borderRadius: "100%",
+  },
+  btnOnInput: {
+    minWidth: "1rem",
+    width: "1.75rem",
+    height: "1.75rem",
+    borderRadius: "100%",
+    color: theme.palette.secondary.main,
+    "& svg": {
+      width: "1.5rem",
+      height: "1.5rem",
+    },
+  },
+  formControl: {
+    [theme.breakpoints.up("md")]: {
+      padding: ".75rem 1rem",
+    },
+    [theme.breakpoints.down("md")]: {
+      padding: ".25rem",
+    },
+    "& .MuiTypography-body1": {
+      fontSize: ".875rem",
+    },
+  },
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
   },
 }));
