@@ -5,12 +5,7 @@ import {
   Typography,
   FormControl,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
   InputAdornment,
-  Radio,
   Tooltip,
   Paper,
   InputLabel,
@@ -31,8 +26,6 @@ const Certification = () => {
   const classes = useStyles();
 
   const [addCommentModal, setAddCommentModal] = useState(false);
-  const [isFile, setIsFile] = useState(false);
-  const [fileName, setFileName] = useState([]);
   const [open, setOpen] = useState({});
   const [certType, setCertType] = useState([
     { qualityPolicyStatement: "" },
@@ -41,6 +34,7 @@ const Certification = () => {
     { qmsManual: "" },
     { orgChart: "" },
     { isoMandatoryProcedure: "" },
+    { legalRequirement: "" },
     { legalComplianceReg: "" },
     { calibCert: "" },
     { corruptPolicy: "" },
@@ -75,9 +69,6 @@ const Certification = () => {
   const handleClose = () => {
     setAddCommentModal(false);
   };
-  const handleVatName = () => {
-    setIsFile(true);
-  };
 
   const handleFileUpload = (e, index) => {
     const filename = e.target.files[0].name;
@@ -85,9 +76,9 @@ const Certification = () => {
     let newArr = [...certType]; // copying the old datas array
     newArr[index][key] = filename;
     setCertType(newArr);
-    console.log(certType[index][Object.keys(certType[index])[0]])
-  }
-  
+    console.log(certType[index][Object.keys(certType[index])[0]]);
+  };
+
   const formik = useFormik({
     initialValues: {
       vatNo: "",
@@ -118,104 +109,116 @@ const Certification = () => {
               onSubmit={formik.handleSubmit}
             >
               <Grid container>
-                <Grid item lg={12}>
-                  <Table className={classes.table}>
-                    <TableBody>
-                      {Certifications.map((certificate, index) => {
-                        return (
-                          <TableRow key={index}>
-                            <TableCell
-                              key={`certificate${index}`}
-                              id={`certificate${index}`}
-                              align="left"
+                {Certifications.map((certificate, index) => {
+                  return (
+                    <Grid item lg={12} sm={12} xs={12}>
+                      <Grid
+                        container
+                        className={classes.qustionsContainer}
+                        key={index}
+                      >
+                        <Grid
+                          item
+                          lg={6}
+                          sm={12}
+                          xs={12}
+                          className={`${classes.certQuestions} ${classes.mobPadding}`}
+                        >
+                          {certificate}
+                        </Grid>
+                        <Grid
+                          item
+                          lg={3}
+                          sm={12}
+                          xs={12}
+                          className={`${classes.mobPadding}`}
+                        >
+                          <FormControl className={classes.certSelect} fullWidth>
+                            <InputLabel id={`select${index}`}>
+                              Select
+                            </InputLabel>
+
+                            <Select
+                              defaultValue=""
+                              key={`select${index}`}
+                              id={`select${index}`}
+                              onChange={(e) =>
+                                handleMenuOpen(e, certificate, index)
+                              }
                             >
-                              {certificate}
-                            </TableCell>
-                            <TableCell width="100px" align="left">
-                              <FormControl
-                                className={classes.certSelect}
-                                fullWidth
-                              >
-                                <InputLabel id={`select${index}`}>
-                                  Select
-                                </InputLabel>
-
-                                <Select
-                                  defaultValue=""
-                                  key={`select${index}`}
-                                  id={`select${index}`}
-                                  onChange={(e) =>
-                                    handleMenuOpen(e, certificate, index)
-                                  }
-                                >
-                                  <MenuItem value={1}>yes</MenuItem>
-                                  <MenuItem value={0}>no</MenuItem>
-                                </Select>
-                              </FormControl>
-                            </TableCell>
-                            <TableCell align="left">
-                              {_.get(open, `${index}`, false) ? (
-                                <FormControl
-                                  className={classes.formControl}
-                                  fullWidth
-                                >
-                                  <TextField
-                                    // label={!isFile ? "" : "d"}
-                                    value={certType[index][Object.keys(certType[index])[0]]}
-                                    disabled
-                                    id="licenseCopy"
-                                    name="licenseCopy"
-                                    InputProps={{
-                                      endAdornment: (
-                                        <>
-                                          <InputAdornment position="end">
-                                            <Tooltip title="Add comment">
-                                              <Button
-                                                onClick={handleCommentModal}
-                                                size="small"
-                                                component="label"
-                                                className={classes.btnOnInput}
-                                              >
-                                                <CommentIcon />
-                                              </Button>
-                                            </Tooltip>
-                                          </InputAdornment>
-                                          <InputAdornment position="end">
-                                            <Tooltip title="Upload VAT certificate">
-                                              <Button
-                                                onClick={handleVatName}
-                                                id="license"
-                                                size="small"
-                                                component="label"
-                                                className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
-                                              >
-                                                <AttachFileIcon />
-                                                <input
-                                                  type="file"
-                                                  hidden
-                                                  onChange={(e) =>
-                                                    handleFileUpload(e, index)
-                                                  }
-                                                />
-                                              </Button>
-                                            </Tooltip>
-                                          </InputAdornment>
-                                        </>
-                                      ),
-                                    }}
-                                  />
-                                </FormControl>
-                              ) : (
-                                <div></div>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </Grid>
-
+                              <MenuItem value={1}>yes</MenuItem>
+                              <MenuItem value={0}>no</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                        <Grid
+                          item
+                          lg={3}
+                          sm={12}
+                          xs={12}
+                          className={`${classes.mobPadding}`}
+                        >
+                          {_.get(open, `${index}`, false) ? (
+                            <FormControl
+                              className={classes.formControl}
+                              fullWidth
+                            >
+                              <TextField
+                                value={
+                                  certType[index][
+                                    Object.keys(certType[index])[0]
+                                  ]
+                                }
+                                disabled
+                                id="licenseCopy"
+                                name="licenseCopy"
+                                InputProps={{
+                                  endAdornment: (
+                                    <>
+                                      <InputAdornment position="end">
+                                        <Tooltip title="Add comment">
+                                          <Button
+                                            onClick={handleCommentModal}
+                                            size="small"
+                                            component="label"
+                                            className={classes.btnOnInput}
+                                          >
+                                            <CommentIcon />
+                                          </Button>
+                                        </Tooltip>
+                                      </InputAdornment>
+                                      <InputAdornment position="end">
+                                        <Tooltip title="Upload VAT certificate">
+                                          <Button
+                                            id="license"
+                                            size="small"
+                                            component="label"
+                                            className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
+                                          >
+                                            <AttachFileIcon />
+                                            <input
+                                              type="file"
+                                              hidden
+                                              onChange={(e) =>
+                                                handleFileUpload(e, index)
+                                              }
+                                            />
+                                          </Button>
+                                        </Tooltip>
+                                      </InputAdornment>
+                                    </>
+                                  ),
+                                }}
+                              />
+                            </FormControl>
+                          ) : (
+                            <div></div>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  );
+                })}
                 <Grid item lg={12} className={classes.saveBtn}>
                   <Button variant="contained" color="primary">
                     Save and Continue

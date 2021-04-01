@@ -13,6 +13,7 @@ import useStyles from './DashboardStyles'
 import BankAccount from "../VendorRegistration/BankAccount/BankAccount";
 import Products from "../VendorRegistration/Products/Products";
 import Certification from "../VendorRegistration/Certification/Certification";
+import Applications from "./Applications/Applications";
 
 const Dashboard = (props) => {
   const state = useSelector((state) => state);
@@ -33,7 +34,7 @@ const Dashboard = (props) => {
           {dashboardTabs === 1 && (
             <>
               <HorizontalTabs />
-              <TabPanel value={0} index={1} content="Applications" />
+              <TabPanel value={0} index={1} content={<Applications />} />
             </>
           )}
         </div>

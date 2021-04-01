@@ -10,7 +10,6 @@ const Certifications = [
     "Do you have Antibribery and corruption policies standards?",
     "Do you have a Code of Conduct for your company in place?",
     "Do you have approved Cyber Security Policy?",
-    "Domestic Gas Distribution",
     "Do you routinely use non-disclosure agreements (NDA's) to protect third party intellectual property rights?",
     "Do you have HSE policy?",
     "Do you have HSE Manual?",

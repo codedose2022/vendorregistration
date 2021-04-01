@@ -87,7 +87,7 @@ const Products = () => {
   return (
     <Container className={classes.mainContainer}>
       <Grid container>
-        <Grid item lg={12}>
+        <Grid item lg={12} xs={12}>
           <Paper className={classes.searchBar}>
             <InputBase
               className={classes.input}
@@ -131,7 +131,7 @@ const Products = () => {
 
         {filteredResult.map((products, index) => {
           return (
-            <Grid item lg={12} key={products}>
+            <Grid item lg={12} xs={12} key={products}>
               <Card className={classes.searchResult}>
                 <CardContent
                   className={classes.searchResultContent}
@@ -151,18 +151,18 @@ const Products = () => {
           );
         })}
       </Grid>
-      <Grid item lg={12} style={{ padding: "1rem 0" }}>
+      <Grid item lg={12} xs={12} style={{ padding: "1rem 0" }}>
         <hr />
       </Grid>
       <Grid container>
-        <Grid item lg={12}>
+        <Grid item lg={12} xs={12}>
           <Typography className={classes.vrTitle} variant="h5">
             Products / Services Information
           </Typography>
         </Grid>
 
-        <Grid item lg={12}>
-          <Paper elevation={2} square={true} className={classes.customPaper}>
+        <Grid item lg={12} xs={12}>
+          <Paper elevation={2} square={true} className={`${classes.customPaper} ${classes.padAdded}`}>
             {!addedProduct.length && (
               <div className={classes.resultError}>
                 <WarningIcon />
@@ -177,7 +177,7 @@ const Products = () => {
                 return (
                   <Grid
                     item
-                    lg={12}
+                    lg={12} xs={12}
                     key={products}
                     className={classes.addedProducts}
                   >
@@ -198,8 +198,8 @@ const Products = () => {
                   </Grid>
                 );
               })}
-            <Grid item lg={12}>
-              <Grid item lg={12} className={classes.saveBtn}>
+            <Grid item lg={12} xs={12}>
+              <Grid item lg={12} xs={12} className={classes.saveBtn}>
                 <Button variant="contained" color="primary">
                   Save and Continue
                 </Button>

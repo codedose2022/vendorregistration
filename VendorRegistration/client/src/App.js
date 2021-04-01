@@ -15,6 +15,15 @@ function App() {
         light: "#cfcfcf",
         dark: "#707070",
       },
+      error: {
+        main: "#e57373",
+      },
+      warning: {
+        main: "#f57c00",
+      },
+      info: {
+        main: "#64b5f6",
+      },
     },
   });
 

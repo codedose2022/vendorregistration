@@ -67,16 +67,16 @@ const handleVatUpload = (e) => {
   return (
     <Container className={classes.mainContainer}>
       <Grid container>
-        <Grid item lg={12}>
+        <Grid item lg={12} xs={12}>
           <Typography className={classes.vrTitle} variant="h5">
             Tax Information
           </Typography>
         </Grid>
-        <Grid item lg={12}>
+        <Grid item lg={12} xs={12}>
         <Paper elevation={2} square={true} className={classes.customPaper} >
           <form className={classes.companyForm} onSubmit={formik.handleSubmit}>
             <Grid container>
-              <Grid item lg={12}>
+              <Grid item lg={12} xs={12}>
                 <FormControl
                   component="fieldset"
                   className={classes.formControl}
@@ -109,7 +109,7 @@ const handleVatUpload = (e) => {
               </Grid>
               {isTax === "yes" && (
                 <>
-                  <Grid item lg={6}>
+                  <Grid item xs={12} lg={6}>
                     <FormControl className={classes.formControl} fullWidth>
                       <TextField
                         id="vatNo"
@@ -177,7 +177,7 @@ const handleVatUpload = (e) => {
                       ) : null}
                     </FormControl>
                   </Grid>
-                  <Grid item lg={6}>
+                  <Grid item xs={12} lg={6}>
                     <FormControl className={classes.formControl} fullWidth>
                       <TextField
                         label={!isVat ? "IBAN confirmation letter" : vatName}

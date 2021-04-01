@@ -66,12 +66,12 @@ const BankAccount = () => {
   return (
     <Container className={classes.mainContainer}>
       <Grid container>
-        <Grid item lg={12}>
+        <Grid item lg={12} xs={12}>
           <Typography className={classes.vrTitle} variant="h5">
             Bank Account Information
           </Typography>
         </Grid>
-        <Grid item lg={12}>
+        <Grid item lg={12} xs={12}>
           <Paper elevation={2} square={true} className={classes.customPaper}>
           <form className={classes.companyForm} onSubmit={formik.handleSubmit}>
             <Grid container>
@@ -311,7 +311,7 @@ const BankAccount = () => {
                   />
                 </FormControl>
               </Grid>
-              <Grid item lg={12} className={classes.saveBtn}>
+              <Grid item lg={12} xs={12} className={classes.saveBtn}>
               <Button variant="contained" color="primary">
                 Save and Continue
               </Button>
