@@ -7,6 +7,7 @@ import {
 } from "../controllers/vendor.js";
 import multer from "multer";
 import { fileFilter, storage } from "../controllers/uploadFiles.js";
+import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.post("/initialSave", initialSave);
 
 router.post("/submit", submit);
 
-router.post("/getAllRegistrations", getAllRegistrations);
+router.post("/getAllRegistrations", auth, getAllRegistrations);
 
 
 /*{

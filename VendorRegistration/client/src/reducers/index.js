@@ -1,8 +1,11 @@
 import { combineReducers } from "redux";
 import ChangeTabs from "./ChangeTabs";
+import user from "./user";
+import vendor from "./vendor";
 
 const appReducer = combineReducers({
   ChangeTabs,
+  user,vendor
 });
 
 // reset the state of a redux store

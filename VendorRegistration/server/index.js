@@ -1,35 +1,41 @@
 import bodyParser from "body-parser";
 import cors from "cors";
+import morgan from "morgan";
+import createError from "http-errors";
 import * as dotenv from "dotenv";
 import express from "express";
-import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import vendor from "./routes/vendor.js";
 import register from "./routes/initialRegister.js";
-
+import authentication from "./routes/authentication.js";
+import mongoose from "mongoose";
 dotenv.config();
+import { initMongodb } from "./helper/initMongodb.js";
 
 const app = express();
-
+app.use(express.json())
+app.use(express.urlencoded({extended : true}))
+app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 
-app.use(cors());
-app.use('/vendor',vendor);
-app.use('/register',register);
+app.use(cors({ origin: process.env.FRONT_END_URL, credentials: true }));
 
-const PORT = process.env.PORT || 8000;
-mongoose
-  .connect(process.env.CONNECTION_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  })
-  .then(() =>
-    app.listen(PORT, () =>
-      console.log(`Server Running on Port: http://localhost:${PORT}`)
-    )
-  )
-  .catch((error) => console.log(`${error} did not connect`));
+app.use(cookieParser());
+app.use("/vendor", vendor);
+app.use("/register", register);
+app.use("/auth", authentication);
 
-mongoose.set("useFindAndModify", false);
- 
+app.use(async (req, res, next) => {
+  next(createError.NotFound());
+});
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.send({
+    error: {
+      status: err.status || 500,
+    },
+  });
+});
+
+initMongodb(app);

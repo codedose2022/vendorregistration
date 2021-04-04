@@ -1,42 +1,26 @@
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route,Switch } from "react-router-dom";
 import Home from "./components/Home/Home";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import Login from "./components/Login/Login";
+import PrivateRoute from "./PrivateRoute";
+import _ from "lodash";
+import { useSelector } from "react-redux";
 
 function App() {
-  const theme = createMuiTheme({
-    palette: {
-      primary: {
-        main: "#00695c",
-        light: "#439889",
-        dark: "#003d33",
-      },
-      secondary: {
-        main: "#9e9e9e",
-        light: "#cfcfcf",
-        dark: "#707070",
-      },
-      error: {
-        main: "#e57373",
-      },
-      warning: {
-        main: "#f57c00",
-      },
-      info: {
-        main: "#64b5f6",
-      },
-    },
-  });
+  const state = useSelector((state) => state);
+  const loggedInStatus = _.get(state, "user.loggedInStatus", "");
+  const user = _.get(state, "user.user", "");
 
   return (
-    <>
-      <Router>
-        <Route exact path="/">
-        <ThemeProvider theme={theme}>
-          <Home />
-          </ThemeProvider>
-        </Route>
-      </Router>
-    </>
+    <Router>
+      <Route exact path='/'>
+        <Login />
+      </Route>
+      <Switch>
+        <PrivateRoute exact path='/home' loggedInStatus={loggedInStatus}>
+          <Home user={user} />
+        </PrivateRoute>
+      </Switch>
+    </Router>
   );
 }
 
