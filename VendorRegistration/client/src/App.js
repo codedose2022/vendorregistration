@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route,Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from "./components/Home/Home";
 import Login from "./components/Login/Login";
 import PrivateRoute from "./PrivateRoute";
@@ -8,7 +8,9 @@ import { useSelector } from "react-redux";
 function App() {
   const state = useSelector((state) => state);
   const loggedInStatus = _.get(state, "user.loggedInStatus", "");
-  const user = _.get(state, "user.user", "");
+  const userInfo = _.get(state, "user.userInfo", "");
+  const activeCompany = _.get(state, "activeCompany", "");
+  const token = _.get(state, "user.token", "");
 
   return (
     <Router>
@@ -17,7 +19,7 @@ function App() {
       </Route>
       <Switch>
         <PrivateRoute exact path='/home' loggedInStatus={loggedInStatus}>
-          <Home user={user} />
+          <Home user={userInfo} token ={token} activeCompany= {activeCompany} />
         </PrivateRoute>
       </Switch>
     </Router>

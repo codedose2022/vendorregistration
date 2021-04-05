@@ -22,6 +22,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 import SideBarDashboard from "../Sidebar/SideBar";
 import ModalPop from "../Modal/ModalPop";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
+import { getStyleForMenu } from "../../Helpers/DashboardHelper";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const StyledMenu = withStyles({
   paper: {
@@ -48,12 +51,13 @@ const MainNavBar = (props) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const company = ["Mersat Consultants", "Mersat Tansports"];
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const company = props.user.companyDetail;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [newCompanyModal, setNewCompanyModal] = useState(false);
   const [isLicense, setIsLicense] = useState(false);
   const [licenseName, setLicenseName] = useState("");
-
 
   const handleLicenseName = () => {
     setIsLicense(true);
@@ -85,37 +89,48 @@ const MainNavBar = (props) => {
     setLicenseName(filename);
   };
 
+  const handleCompanyChange = (e,company) => {
+    dispatch({ type: "CHANGE_COMPANY", payload:company  });
+  };
+
+  const handleLogOut = () => {
+    localStorage.setItem("auth-token", "");
+    dispatch({ type: "RESET_STORE" });
+    localStorage.setItem("master_class", "");
+    history.push("/");
+  };
+
   return (
     <>
-      <AppBar position="fixed" elevation={2} className={classes.customAppBar}>
+      <AppBar position='fixed' elevation={2} className={classes.customAppBar}>
         <Toolbar className={classes.flexBar}>
           <IconButton
-            color="primary"
-            aria-label="open drawer"
-            edge="start"
+            color='primary'
+            aria-label='open drawer'
+            edge='start'
             onClick={handleDrawerToggle}
             className={classes.menuButton}
           >
             <MenuIcon />
           </IconButton>
           <div className={classes.branding}>
-            <img src={logo} alt="company logo" />
+            <img src={logo} alt='company logo' />
           </div>
           <div className={classes.mainNavIcon}>
             <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
+              aria-label='account of current user'
+              aria-controls='menu-appbar'
+              aria-haspopup='true'
               onClick={handleMenu}
-              color="secondary"
-              edge="end"
+              color='secondary'
+              edge='end'
             >
-              <Avatar color="primary">
+              <Avatar color='primary'>
                 <Typography>MC</Typography>
               </Avatar>
             </IconButton>
             <StyledMenu
-              id="menu-appbar"
+              id='menu-appbar'
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
@@ -140,8 +155,18 @@ const MainNavBar = (props) => {
               </div>
               {company.map((cmpny, index) => {
                 return (
-                  <MenuItem key={index} className={classes.menuItem}>
-                    {cmpny}
+                  <MenuItem
+                    key={index}
+                    className={classes.menuItem}
+                    onClick={(e) => handleCompanyChange(e,cmpny)}
+                    color='secondary'
+                    style={getStyleForMenu(
+                      cmpny.companyName[0],
+                      props.activeCompany
+                    )}
+                  >
+                    {cmpny.companyName[0]}
+                  
                   </MenuItem>
                 );
               })}
@@ -155,17 +180,18 @@ const MainNavBar = (props) => {
               <Divider />
               <div className={classes.popoverBtnPanel}>
                 <Button
-                  color="primary"
-                  variant="contained"
+                  color='primary'
+                  variant='contained'
                   onClick={handleAddCompanyModal}
                   className={`${classes.capsuleBtn} ${classes.tiny}`}
                 >
                   Add new Company
                 </Button>
                 <Button
-                  color="primary"
-                  variant="contained"
+                  color='primary'
+                  variant='contained'
                   className={`${classes.capsuleBtn} ${classes.tiny}`}
+                  onClick = {handleLogOut}
                 >
                   Logout
                 </Button>
@@ -178,7 +204,7 @@ const MainNavBar = (props) => {
       <SideBarDashboard mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       <ModalPop
-        title="Add New Company"
+        title='Add New Company'
         isOpen={newCompanyModal}
         handleClose={handleModalClose}
         content={
@@ -187,50 +213,50 @@ const MainNavBar = (props) => {
               <Grid item xs={12}>
                 <FormControl fullWidth className={classes.formControl}>
                   <TextField
-                    id="companyName"
-                    name="companyName"
-                    label="Company name"
-                    type="text"
+                    id='companyName'
+                    name='companyName'
+                    label='Company name'
+                    type='text'
                   />
                 </FormControl>
                 <FormControl fullWidth className={classes.formControl}>
                   <TextField
-                    id="licenseNo"
-                    name="licenseNo"
-                    label="License number"
-                    type="text"
+                    id='licenseNo'
+                    name='licenseNo'
+                    label='License number'
+                    type='text'
                   />
                 </FormControl>
                 <FormControl fullWidth className={classes.formControl}>
                   <TextField
                     InputLabelProps={{ shrink: true }}
-                    id="licenseExpDt"
-                    name="licenseExpDt"
-                    type="date"
-                    label="License expiry date"
+                    id='licenseExpDt'
+                    name='licenseExpDt'
+                    type='date'
+                    label='License expiry date'
                   />
                 </FormControl>
                 <FormControl className={classes.formControl} fullWidth>
                   <TextField
                     label={!isLicense ? "License copy" : licenseName}
                     disabled
-                    id="licenseCopy"
-                    name="licenseCopy"
+                    id='licenseCopy'
+                    name='licenseCopy'
                     InputProps={{
                       endAdornment: (
                         <>
-                          <InputAdornment position="end">
-                            <Tooltip title="Upload License">
+                          <InputAdornment position='end'>
+                            <Tooltip title='Upload License'>
                               <Button
                                 onClick={handleLicenseName}
-                                id="license"
-                                size="small"
-                                component="label"
+                                id='license'
+                                size='small'
+                                component='label'
                                 className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
                               >
                                 <AttachFileIcon />
                                 <input
-                                  type="file"
+                                  type='file'
                                   hidden
                                   onChange={(e) => handleLicenseUpload(e)}
                                 />

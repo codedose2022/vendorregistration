@@ -1,12 +1,17 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SideBarDashboard from "../Sidebar/SideBar";
 import MainNavBar from "../MainNav/MainNav";
 import Dashboard from "../Dashboard/Dashboard";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import {getAllRegistrations} from '../../Actions/vendorRegActions';
+import {
+  getAllRegistrations,
+  getUserInfo,
+} from "../../Actions/vendorRegActions";
 import { isTokenValid } from "../../Api/index";
+import Alert from "@material-ui/lab/Alert";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const theme = createMuiTheme({
   palette: {
@@ -32,17 +37,17 @@ const theme = createMuiTheme({
   },
   typography: {
     fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
+      "-apple-system",
+      "BlinkMacSystemFont",
       '"Segoe UI"',
-      'Roboto',
+      "Roboto",
       '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
+      "Arial",
+      "sans-serif",
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
-    ].join(','),
+    ].join(","),
   },
 });
 
@@ -51,24 +56,22 @@ export default function Home(props) {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [serviceErrors, setServiceErrors] = useState("");
+
   useEffect(() => {
     const loadDashboard = async () => {
       try {
-        const tokenRes = await isTokenValid(props.user.token);
+        const tokenRes = await isTokenValid(props.token);
         if (!tokenRes.data) {
           localStorage.setItem("auth-token", "");
           localStorage.setItem("master_class", "");
-          history.push("/home");
+          history.push("/");
         } else {
           dispatch(
-            getAllRegistrations(
-              props.user.userInfo._id,
-              props.user.token,
-              setServiceErrors
-            )
+            getAllRegistrations(props.user._id, props.token, setServiceErrors)
           );
-         
-         setIsLoading(false);
+
+          dispatch(getUserInfo(props.user._id, props.token, setServiceErrors));
+          setIsLoading(false);
         }
       } catch (error) {
         localStorage.setItem("auth-token", "");
@@ -76,16 +79,35 @@ export default function Home(props) {
       }
     };
     loadDashboard();
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-
-
 
   return (
     <ThemeProvider theme={theme}>
-      <MainNavBar />
-      <SideBarDashboard />
-      <Dashboard />
+      {serviceErrors && <Alert severity='error'> {serviceErrors} </Alert>}
+      {!serviceErrors && isLoading ? (
+        <CircularProgress
+          style={{ position: "absolute", left: "50%", top: "50%" }}
+        />
+      ) : (
+        <>
+          <MainNavBar
+            user={props.user}
+            activeCompany={props.activeCompany}
+            token={props.token}
+          />
+          <SideBarDashboard
+            user={props.user}
+            token={props.token}
+            activeCompany={props.activeCompany}
+          />
+          <Dashboard
+            user={props.user}
+            token={props.token}
+            activeCompany={props.activeCompany}
+          />
+        </>
+      )}
     </ThemeProvider>
   );
 }

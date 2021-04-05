@@ -7,9 +7,9 @@ import Profile from "./Profile/Profile";
 import Company from "../VendorRegistration/Company/Company";
 import Owner from "../VendorRegistration/Owner/Owner";
 import Tax from "../VendorRegistration/Tax/Tax";
-import Contact from "../VendorRegistration/Contact/Contact"; 
-import Other from "../VendorRegistration/Other/Others"; 
-import useStyles from './DashboardStyles'
+import Contact from "../VendorRegistration/Contact/Contact";
+import Other from "../VendorRegistration/Other/Others";
+import useStyles from "./DashboardStyles";
 import BankAccount from "../VendorRegistration/BankAccount/BankAccount";
 import Products from "../VendorRegistration/Products/Products";
 import Certification from "../VendorRegistration/Certification/Certification";
@@ -25,15 +25,14 @@ const Dashboard = (props) => {
     <>
       {activeMainTabs === "Dashboard" && (
         <div className={classes.mainContainer}>
+          <HorizontalTabs />
           {dashboardTabs === 0 && (
             <>
-              <HorizontalTabs />
               <TabPanel value={0} index={0} content={<Profile />} />
             </>
           )}
           {dashboardTabs === 1 && (
             <>
-              <HorizontalTabs />
               <TabPanel value={0} index={1} content={<Applications />} />
             </>
           )}
@@ -48,7 +47,9 @@ const Dashboard = (props) => {
           {activeTabs === 1 && (
             <TabPanel value={1} index={1} content={<Owner />} />
           )}
-          {activeTabs === 2 && <TabPanel value={2} index={2} content={<Tax />} />}
+          {activeTabs === 2 && (
+            <TabPanel value={2} index={2} content={<Tax />} />
+          )}
           {activeTabs === 3 && (
             <TabPanel value={3} index={3} content={<BankAccount />} />
           )}
@@ -61,7 +62,9 @@ const Dashboard = (props) => {
           {activeTabs === 6 && (
             <TabPanel value={6} index={6} content={<Contact />} />
           )}
-          {activeTabs === 7 && <TabPanel value={7} index={7} content={<Other />} />}
+          {activeTabs === 7 && (
+            <TabPanel value={7} index={7} content={<Other />} />
+          )}
         </div>
       )}
     </>

@@ -39,7 +39,7 @@ export const login = async (req, res) => {
     responseData.status = responseStatusConstants.SUCCESS;
     responseData.token = token;
     delete user._doc.password;
-    responseData.userInfo = user;
+   responseData.userInfo = user;
     return res.status(200).json(responseData);
   } catch (error) {
     responseData.message = error.message;

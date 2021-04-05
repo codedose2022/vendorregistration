@@ -41,7 +41,6 @@ export const initialRegister = async (req, res) => {
       responseData.status = responseStatusConstants.EXISTING_USER;
       return res.status(200).json(responseData);
     } else {
-     
       const initialReg = new initRegistration(regData);
       await initialReg.save().then((result) => {
         sendEmail(req.body.email, req.body.fName, "InitialRegistration", null);
@@ -66,23 +65,47 @@ export const addNewCompany = async (req, res) => {
     const regData = {
       companyDetail: { companyName, licenseNo, licenseExpDt, licenseCopy },
     };
-    await initRegistration.findOneAndUpdate(
-      {
-        _id: req.body._id,
-      },
-      {
-        $push: regData,
-      } ,
-      {new: true}
-    ).then((result) => {
-      console.log(result);
-      sendEmail(result.email[0], result.fName[0], "InitialRegistration", null);
-    });
-    
+    await initRegistration
+      .findOneAndUpdate(
+        {
+          _id: req.body._id,
+        },
+        {
+          $push: regData,
+        },
+        { new: true }
+      )
+      .then((result) => {
+        console.log(result);
+        sendEmail(
+          result.email[0],
+          result.fName[0],
+          "InitialRegistration",
+          null
+        );
+      });
+
     responseData.status = responseStatusConstants.SUCCESS;
     return res.status(200).json(responseData);
   } catch (error) {
     responseData.status = responseStatusConstants.FAILURE;
+    responseData.message = error.message;
+    return res.status(404).json(responseData);
+  }
+};
+export const getUserInfo = async (req, res) => {
+  const responseData = {};
+  try {
+    const user = await initRegistration.findOne({
+      _id: req.body.initRegId,
+    });
+    if (user) {
+      responseData.status = responseStatusConstants.SUCCESS;
+      delete user._doc.password;
+      responseData.userInfo = user;
+      return res.status(200).json(responseData);
+    }
+  } catch (error) {
     responseData.message = error.message;
     return res.status(404).json(responseData);
   }

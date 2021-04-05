@@ -5,6 +5,12 @@ const vendor =  (state = [], action) => {
           ...state,
           vendors:action.payload,
         };
+        case "ALL_VENDORS":
+        return {
+          ...state,
+          vendors:action.payload,
+        };
+        
       default:
         return {...state} ;
     }

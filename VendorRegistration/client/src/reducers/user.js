@@ -1,19 +1,22 @@
 const user = (state = [], action) => {
+  let key = 'user.userInfo'
+
   switch (action.type) {
     case "USER_INFO":
       return {
         ...state,
-        user: action.payload,
+        token: action.payload.token,
+        userInfo : action.payload.userInfo
       };
     case "LOGIN":
       return {
         ...state,
         loggedInStatus: action.payload,
       };
-    case "USERS_LIST":
+    case "UPDATE_USER_INFO":
       return {
         ...state,
-        usersList: action.payload,
+        userInfo : action.payload
       };
     default:
       return { ...state };
