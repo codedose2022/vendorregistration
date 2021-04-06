@@ -6,7 +6,10 @@ export const getAllRegistrations = (userId, token, errCallback) => async (
   dispatch
 ) => {
   try {
-    const { data } = await api.getAllRegistrations({ initRegId: userId }, token);
+    const { data } = await api.getAllRegistrations(
+      { initRegId: userId },
+      token
+    );
     const successStatusCd = _.get(data, "status", "");
     if (successStatusCd === responseStatusConstants.SUCCESS) {
       dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
@@ -18,14 +21,36 @@ export const getAllRegistrations = (userId, token, errCallback) => async (
   }
 };
 
-export const getUserInfo = (userId, token, errCallback) => async (
-  dispatch
-) => {
+export const getUserInfo = (userId, token, errCallback) => async (dispatch) => {
   try {
     const { data } = await api.getUserInfo({ initRegId: userId }, token);
     const successStatusCd = _.get(data, "status", "");
     if (successStatusCd === responseStatusConstants.SUCCESS) {
-     dispatch({ type: "UPDATE_USER_INFO", payload: data.userInfo });
+      dispatch({ type: "UPDATE_USER_INFO", payload: data.userInfo });
+    } else {
+      errCallback(_.get(data, "message", ""));
+    }
+  } catch (error) {
+    errCallback("Please try again later");
+  }
+};
+export const addNewCompany = (
+  newCompany,
+  errCallback,
+  token,
+  userId,
+  successCallback
+) => async (dispatch) => {
+  try {
+    const { data } = await api.addNewCompany(newCompany, token);
+
+    const successStatusCd = _.get(data, "status", "");
+    if (successStatusCd === responseStatusConstants.SUCCESS) {
+     
+      dispatch(getUserInfo(userId, token, errCallback));
+      successCallback()
+     
+      
     } else {
       errCallback(_.get(data, "message", ""));
     }

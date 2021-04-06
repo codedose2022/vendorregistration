@@ -76,7 +76,6 @@ export const addNewCompany = async (req, res) => {
         { new: true }
       )
       .then((result) => {
-        console.log(result);
         sendEmail(
           result.email[0],
           result.fName[0],

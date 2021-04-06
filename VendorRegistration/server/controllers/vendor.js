@@ -32,19 +32,21 @@ export const initialSave = async (req, res) => {
     }
     //if vendorId is present, update the document for fields as per in req
     if (vendorId !== "") {
-      const entries = Object.keys(keyValuePair);
-
+      
       let updates = {};
+      const entries = Object.keys(reqValue);
       for (let i = 0; i < entries.length; i++) {
-        updates[entries[i]] = Object.values(keyValuePair)[i];
+        updates[`${reqKey}.${entries[i]}`] = Object.values(reqValue)[i];
       }
-      await vendorRegistrations.updateOne(
+      await vendorRegistrations.findOneAndUpdate(
         {
           _id: vendorId,
         },
         {
           $set: updates,
-        }
+         
+        },
+    
       );
       responseData.message = responseMessageConstants.UPDATED;
       responseData.status = responseStatusConstants.SUCCESS;
@@ -103,13 +105,12 @@ export const submit = async (req, res) => {
             status: status,
           },
         },
-        {new: true},
+        { new: true },
         {
           fields: {
-            'ownerInfo': 1,
-    
-          
-        } }
+            ownerInfo: 1,
+          },
+        }
       )
       .then((result) => {
         responseData.vendorRegistrationsList = result;
@@ -170,7 +171,5 @@ export const uploadFile = async (req, res) => {
     return res.status(404).json(responseData);
   }
 };
-
-
 
 export default router;

@@ -3,3 +3,4 @@ export const getStyleForMenu = (company, activeCompany) => {
     return { backgroundColor: "#8080801c", color:"#00695c" };
   }
 };
+

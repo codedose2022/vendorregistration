@@ -11,7 +11,15 @@ import Close from "@material-ui/icons/Close";
 import React from "react";
 import useStyles from "./ModalPopStyles";
 
-const ModalPop = ({ isOpen, handleClose, width, title, content }) => {
+const ModalPop = ({
+  isOpen,
+  handleClose,
+  onSubmit,
+  width,
+  title,
+  content,
+
+}) => {
   const classes = useStyles();
 
   return (
@@ -19,31 +27,31 @@ const ModalPop = ({ isOpen, handleClose, width, title, content }) => {
       open={isOpen}
       onClose={handleClose}
       maxWidth={width}
-      aria-labelledby="alert-dialog-slide-title"
-      aria-describedby="alert-dialog-slide-description"
+      aria-labelledby='alert-dialog-slide-title'
+      aria-describedby='alert-dialog-slide-description'
       fullWidth
       disableBackdropClick
     >
-      <DialogTitle id="alert-dialog-slide-title" className={classes.modalTitle}>
+      <DialogTitle id='alert-dialog-slide-title' className={classes.modalTitle}>
         {title}
-        <IconButton color="secondary" size="small" onClick={handleClose}>
+        <IconButton color='secondary' size='small' onClick={handleClose}>
           <Close />
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-slide-content" component="div">
+        <DialogContentText id='alert-dialog-slide-content' component='div'>
           {content}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={handleClose} color='primary'>
           Cancel
         </Button>
         <Button
-          onClick={handleClose}
-          color="primary"
+          onClick={onSubmit}
+          color='primary'
           autoFocus
-          variant="contained"
+          variant='contained'
         >
           Submit
         </Button>

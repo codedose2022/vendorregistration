@@ -25,6 +25,10 @@ import AttachFileIcon from "@material-ui/icons/AttachFile";
 import { getStyleForMenu } from "../../Helpers/DashboardHelper";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { validateField } from "../../Helpers/validationHelper";
+import { addNewCompany } from "../../Actions/vendorRegActions";
+import { Alert } from "@material-ui/lab";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const StyledMenu = withStyles({
   paper: {
@@ -53,13 +57,25 @@ const MainNavBar = (props) => {
   const open = Boolean(anchorEl);
   const history = useHistory();
   const dispatch = useDispatch();
-  const company = props.user.companyDetail;
+  const company = props.user.companyDetail.filter(
+    (company) => company.status === "approved"
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
   const [newCompanyModal, setNewCompanyModal] = useState(false);
   const [isLicense, setIsLicense] = useState(false);
   const [licenseName, setLicenseName] = useState("");
+  const [touched, setTouched] = useState(false);
+  const [serviceErrors, setServiceErrors] = useState("");
+  const [snackbar, setSnackbar] = useState(false);
 
-  const handleLicenseName = () => {
+  const [newCompany, setNewCompany] = useState({
+    companyName: "",
+    licenseNo: "",
+    licenseExpDt: "",
+    file: "",
+  });
+
+  const handleLicenseName = (e) => {
     setIsLicense(true);
   };
 
@@ -81,23 +97,73 @@ const MainNavBar = (props) => {
 
   const handleModalClose = () => {
     setNewCompanyModal(false);
+    setNewCompany({
+      companyName: "",
+      licenseNo: "",
+      licenseExpDt: "",
+      file: "",
+    });
+    setTouched(false);
   };
 
   const handleLicenseUpload = (e) => {
-    let filename = e.target.files[0].name;
+    e.preventDefault();
+    let filename = e.target.files[0] ? e.target.files[0].name : "";
     setIsLicense(true);
     setLicenseName(filename);
+    let file = e.target.files[0] ? e.target.files[0] : "";
+    setNewCompany({
+      ...newCompany,
+      file: file,
+    });
   };
 
-  const handleCompanyChange = (e,company) => {
-    dispatch({ type: "CHANGE_COMPANY", payload:company  });
+  const successCallback = () => {
+    handleModalClose();
+    setSnackbar(true);
   };
 
+  const handleCompanyChange = (e, company) => {
+    dispatch({ type: "CHANGE_COMPANY", payload: company });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setTouched(true);
+    setServiceErrors("");
+    if (
+      validateField("field", newCompany.companyName) === "" &&
+      validateField("field", newCompany.licenseNo) === "" &&
+      validateField("field", newCompany.licenseExpDt) === "" &&
+      validateField("field", licenseName) === ""
+    ) {
+      let coFormData = new FormData();
+      for (let key in newCompany) {
+        coFormData.append(key, newCompany[key]);
+      }
+      coFormData.append("_id", props.user._id);
+
+      dispatch(
+        addNewCompany(
+          coFormData,
+          setServiceErrors,
+          props.token,
+          props.user._id,
+          successCallback
+        )
+      );
+    }
+  };
   const handleLogOut = () => {
     localStorage.setItem("auth-token", "");
     dispatch({ type: "RESET_STORE" });
     localStorage.setItem("master_class", "");
     history.push("/");
+  };
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar(false);
   };
 
   return (
@@ -158,7 +224,7 @@ const MainNavBar = (props) => {
                   <MenuItem
                     key={index}
                     className={classes.menuItem}
-                    onClick={(e) => handleCompanyChange(e,cmpny)}
+                    onClick={(e) => handleCompanyChange(e, cmpny)}
                     color='secondary'
                     style={getStyleForMenu(
                       cmpny.companyName[0],
@@ -166,7 +232,6 @@ const MainNavBar = (props) => {
                     )}
                   >
                     {cmpny.companyName[0]}
-                  
                   </MenuItem>
                 );
               })}
@@ -191,7 +256,7 @@ const MainNavBar = (props) => {
                   color='primary'
                   variant='contained'
                   className={`${classes.capsuleBtn} ${classes.tiny}`}
-                  onClick = {handleLogOut}
+                  onClick={handleLogOut}
                 >
                   Logout
                 </Button>
@@ -202,13 +267,27 @@ const MainNavBar = (props) => {
       </AppBar>
 
       <SideBarDashboard mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
-
+      {snackbar && (
+        <Snackbar
+          open={true}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={2000}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert severity='success'>
+            Request has been submitted successfully for adding new company.
+          </Alert>
+        </Snackbar>
+      )}
       <ModalPop
         title='Add New Company'
         isOpen={newCompanyModal}
         handleClose={handleModalClose}
+        onSubmit={handleSubmit}
         content={
           <form>
+            {serviceErrors && <Alert severity='error'> {serviceErrors} </Alert>}
+
             <Grid container>
               <Grid item xs={12}>
                 <FormControl fullWidth className={classes.formControl}>
@@ -217,6 +296,25 @@ const MainNavBar = (props) => {
                     name='companyName'
                     label='Company name'
                     type='text'
+                    value={newCompany.companyName}
+                    FormHelperTextProps={{
+                      className: classes.helperTextError,
+                    }}
+                    onChange={(e) =>
+                      setNewCompany({
+                        ...newCompany,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
+                    helperText={
+                      touched &&
+                      validateField(
+                        "field",
+                        newCompany.companyName,
+                        "Company name"
+                      )
+                    }
+                    required
                   />
                 </FormControl>
                 <FormControl fullWidth className={classes.formControl}>
@@ -225,6 +323,25 @@ const MainNavBar = (props) => {
                     name='licenseNo'
                     label='License number'
                     type='text'
+                    value={newCompany.licenseNo}
+                    required
+                    FormHelperTextProps={{
+                      className: classes.helperTextError,
+                    }}
+                    onChange={(e) =>
+                      setNewCompany({
+                        ...newCompany,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
+                    helperText={
+                      touched &&
+                      validateField(
+                        "field",
+                        newCompany.licenseNo,
+                        "License number"
+                      )
+                    }
                   />
                 </FormControl>
                 <FormControl fullWidth className={classes.formControl}>
@@ -233,22 +350,48 @@ const MainNavBar = (props) => {
                     id='licenseExpDt'
                     name='licenseExpDt'
                     type='date'
+                    FormHelperTextProps={{
+                      className: classes.helperTextError,
+                    }}
+                    value={newCompany.licenseExpDt}
                     label='License expiry date'
+                    required
+                    helperText={
+                      touched &&
+                      validateField(
+                        "field",
+                        newCompany.licenseExpDt,
+                        "License expiry date"
+                      )
+                    }
+                    onChange={(e) =>
+                      setNewCompany({
+                        ...newCompany,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
                   />
                 </FormControl>
                 <FormControl className={classes.formControl} fullWidth>
                   <TextField
                     label={!isLicense ? "License copy" : licenseName}
-                    disabled
                     id='licenseCopy'
-                    name='licenseCopy'
+                    name='file'
+                    required
+                    FormHelperTextProps={{
+                      className: classes.helperTextError,
+                    }}
+                    helperText={
+                      touched &&
+                      validateField("attachment", licenseName, "License copy")
+                    }
                     InputProps={{
                       endAdornment: (
                         <>
                           <InputAdornment position='end'>
                             <Tooltip title='Upload License'>
                               <Button
-                                onClick={handleLicenseName}
+                                onClick={(e) => handleLicenseName(e)}
                                 id='license'
                                 size='small'
                                 component='label'

@@ -18,3 +18,8 @@ export const getAllRegistrations = (initRegId, token) =>
   axios.post(`register/getUserInfo`, initRegId, {
     headers: { "x-auth-token": token },
   });
+
+  export const addNewCompany =( newCompany, token) =>
+  axios.post(`register/addNewCompany`, newCompany,{
+    headers: { "x-auth-token": token },
+  });

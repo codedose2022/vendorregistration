@@ -101,4 +101,7 @@ export default makeStyles((theme) => ({
     width: theme.spacing(7),
     height: theme.spacing(7),
   },
+  helperTextError: {
+    color: "#d50000",
+  },
 }));

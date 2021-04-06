@@ -12,7 +12,7 @@ const router = express.Router();
 let upload = multer({ storage, fileFilter });
 
 router.post("/initialRegister", upload.single("file"), initialRegister);
-router.post("/addNewCompany", upload.single("file"), addNewCompany);
+router.post("/addNewCompany", auth , upload.single("file"), addNewCompany);
 router.post("/getUserInfo", auth, getUserInfo);
 
 /*{

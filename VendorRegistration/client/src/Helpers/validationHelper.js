@@ -1,4 +1,4 @@
-export const validateField = (fieldName, value) => {
+export const validateField = (fieldName, value, name) => {
   let error = "";
   switch (fieldName) {
     case "username":
@@ -13,11 +13,21 @@ export const validateField = (fieldName, value) => {
         error = `Please enter ${fieldName}`;
       }
       return error;
+    case "field":
+      if (!value) {
+        error = `Please enter ${name}`;
+      }
+      return error;
+    case "attachment":
+      if (!value) {
+        error = `Please attach ${name}`;
+      }
+      return error;
     default:
       break;
   }
 };
 
-export const isAdminOrPr =(department) =>{
-  return ['Admin', 'Procurement'].includes(department);
-}
+export const isAdminOrPr = (department) => {
+  return ["Admin", "Procurement"].includes(department);
+};

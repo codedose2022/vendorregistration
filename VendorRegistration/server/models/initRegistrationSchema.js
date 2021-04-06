@@ -10,10 +10,9 @@ const companyDetailSchema = mongoose.Schema({
   licenseNo: [String],
   licenseExpDt: [Date],
   licenseCopy: String,
-  category:[String],
+  category: [String],
   status: {
     type: String,
-
     default: "new",
   },
 });

@@ -28,7 +28,7 @@ const Dashboard = (props) => {
           <HorizontalTabs />
           {dashboardTabs === 0 && (
             <>
-              <TabPanel value={0} index={0} content={<Profile />} />
+              <TabPanel value={0} index={0} content={<Profile content = {props}/>} />
             </>
           )}
           {dashboardTabs === 1 && (

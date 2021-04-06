@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { Button, createMuiTheme, ThemeProvider } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import {Link,  IconButton,
-  InputAdornment,} from "@material-ui/core";
+import { Link, IconButton, InputAdornment } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -44,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
   helperTextError: {
     color: "#d50000",
   },
-
 }));
 const theme = createMuiTheme({
   palette: {
@@ -93,9 +89,9 @@ export default function Login() {
             </Typography>
 
             <form className={classes.form} noValidate onSubmit={handleSubmit}>
-            {serviceErrors && (
-                  <Alert severity="error"> {serviceErrors} </Alert>
-                )}
+              {serviceErrors && (
+                <Alert severity='error'> {serviceErrors} </Alert>
+              )}
               <TextField
                 variant='outlined'
                 margin='normal'
@@ -106,7 +102,7 @@ export default function Login() {
                 name='username'
                 autoComplete='email'
                 value={loginData.username}
-                FormHelperTextProps={{
+                formHelperTextProps={{
                   className: classes.helperTextError,
                 }}
                 helperText={
@@ -116,7 +112,8 @@ export default function Login() {
                   setLoginData({
                     ...loginData,
                     [e.target.name]: e.target.value,
-                  })}
+                  })
+                }
                 autoFocus
               />
               <TextField
@@ -128,32 +125,28 @@ export default function Login() {
                 label='Password'
                 type={showPassword ? "text" : "password"}
                 id='password'
-                FormHelperTextProps={{
+                formHelperTextProps={{
                   className: classes.helperTextError,
                 }}
                 onChange={(e) =>
                   setLoginData({
                     ...loginData,
                     [e.target.name]: e.target.value,
-                  })}
+                  })
+                }
                 autoComplete='current-password'
                 helperText={
-                  touched &&
-                  validateField("password", loginData.password)
+                  touched && validateField("password", loginData.password)
                 }
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="end">
+                    <InputAdornment position='end'>
                       <IconButton
-                        aria-label="toggle password visibility"
+                        aria-label='toggle password visibility'
                         onClick={handleShowPassword}
-                        size="small"
+                        size='small'
                       >
-                        {showPassword ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   ),
