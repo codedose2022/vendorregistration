@@ -1,33 +1,31 @@
 import {
-  Container,
-  Grid,
-  TextField,
-  Typography,
-  FormControl,
-  FormControlLabel,
-  Checkbox,
-  FormLabel,
-  FormGroup,
   Button,
+  Container,
+  FormControl,
+  Grid,
   InputAdornment,
-  Tooltip,
   Paper,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@material-ui/core";
-import React, { useState,useContext } from "react";
-import useStyles from "../VendorRegistrationStyles";
-import VendorType from "../../../Constants/VendorType";
-import AttachFileIcon from "@material-ui/icons/AttachFile";
 import AddIcon from "@material-ui/icons/Add";
+import AttachFileIcon from "@material-ui/icons/AttachFile";
 import Close from "@material-ui/icons/Close";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
+import React, { useContext, useState } from "react";
+import { useDispatch } from "react-redux";
 import * as Yup from "yup";
-import ModalPop from "../../Modal/ModalPop";
 import { UserContext } from "../../../Context/UserContext";
+import { uploadFileToServer } from "../../../Helpers/FileUpload";
+import ModalPop from "../../Modal/ModalPop";
+import useStyles from "../VendorRegistrationStyles";
 
 const Company = () => {
   const classes = useStyles();
-  const { user, activeCompany, token, vendor } = useContext(UserContext);
+  const dispatch = useDispatch();
+  const { activeCompany, token, vendor } = useContext(UserContext);
   const [isIncorp, setIsIncorp] = useState(false);
   const [isPpt, setIsPpt] = useState(false);
   const [incorpName, setIncorpName] = useState("");
@@ -43,34 +41,22 @@ const Company = () => {
     },
   ]);
 
-  const handleIncorpName = (e) => {
+  const handleFileUpload = (e, setVal, val) => {
     const filename = e.target.files[0].name;
-    setIncorpName(filename);
-  };
-  const handleIncorpUpload = () => {
-    setIsIncorp(true);
-  };
-  const handlePptName = (e) => {
-    const filename = e.target.files[0].name;
-    setPptName(filename);
-  };
-  const handlePptUpload = () => {
-    setIsPpt(true);
-  };
-  const handleLogo = (e) => {
-    const filename = e.target.files[0].name;
-    setLogoName(filename);
-  };
-  const handleLogoUpload = () => {
-    setLogo(true);
+    setVal(filename);
+    uploadFileToServer(
+      e,
+      vendor,
+      val,
+      dispatch,
+      activeCompany,
+      token,
+      "otherInfo"
+    );
   };
 
-  const handleCover = (e) => {
-    const filename = e.target.files[0].name;
-    setCoverName(filename);
-  };
-  const handleCoverUpload = () => {
-    setCover(true);
+  const handleFileState = (setFile) => {
+    setFile(true);
   };
 
   const handleCommentModal = () => {
@@ -84,6 +70,7 @@ const Company = () => {
   const handleAddAssociation = (index) => {
     setAssociations([...associations, { association: "" }]);
   };
+
   const handleRemoveAssociation = (index) => {
     const values = [...associations];
     values.splice(index, 1);
@@ -99,11 +86,11 @@ const Company = () => {
   const formik = useFormik({
     initialValues: {
       companyDesc: "",
-      incorpCopy: "",
-      pptCopy: "",
-      logoCopy: "",
-      coverCopy: "",
-      associationName: "",
+      incorpCopy: "incorpName",
+      pptCopy: "pptName",
+      logoCopy: "logoName",
+      coverCopy: "coverName",
+      // associationName: "",
     },
     validationSchema: Yup.object({
       companyDesc: Yup.string().required("Required"),
@@ -111,7 +98,7 @@ const Company = () => {
       pptCopy: Yup.string().required("Required"),
       logoCopy: Yup.string().required("Required"),
       coverCopy: Yup.string().required("Required"),
-      associationName: Yup.string().required("Required"),
+      // associationName: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
@@ -196,7 +183,7 @@ const Company = () => {
                             <InputAdornment position="end">
                               <Tooltip title="Upload company incorporation document">
                                 <Button
-                                  onClick={handleIncorpUpload}
+                                  onClick={(e) => handleFileState(setIsIncorp)}
                                   size="small"
                                   component="label"
                                   className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
@@ -205,7 +192,13 @@ const Company = () => {
                                   <input
                                     type="file"
                                     hidden
-                                    onChange={(e) => handleIncorpName(e)}
+                                    onChange={(e) =>
+                                      handleFileUpload(
+                                        e,
+                                        setIncorpName,
+                                        "incorpCopy"
+                                      )
+                                    }
                                   />
                                 </Button>
                               </Tooltip>
@@ -240,7 +233,7 @@ const Company = () => {
                             <InputAdornment position="end">
                               <Tooltip title="Upload company presentation">
                                 <Button
-                                  onClick={handlePptUpload}
+                                  onClick={(e) => handleFileState(setIsPpt)}
                                   size="small"
                                   component="label"
                                   className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
@@ -249,7 +242,9 @@ const Company = () => {
                                   <input
                                     type="file"
                                     hidden
-                                    onChange={(e) => handlePptName(e)}
+                                    onChange={(e) =>
+                                      handleFileUpload(e, setPptName, "pptCopy")
+                                    }
                                   />
                                 </Button>
                               </Tooltip>
@@ -285,7 +280,7 @@ const Company = () => {
                             <InputAdornment position="end">
                               <Tooltip title="Upload company logo">
                                 <Button
-                                  onClick={handleLogoUpload}
+                                  onClick={(e) => handleFileState(setLogo)}
                                   size="small"
                                   component="label"
                                   className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
@@ -294,7 +289,13 @@ const Company = () => {
                                   <input
                                     type="file"
                                     hidden
-                                    onChange={(e) => handleLogo(e)}
+                                    onChange={(e) =>
+                                      handleFileUpload(
+                                        e,
+                                        setLogoName,
+                                        "logoCopy"
+                                      )
+                                    }
                                   />
                                 </Button>
                               </Tooltip>
@@ -329,7 +330,7 @@ const Company = () => {
                             <InputAdornment position="end">
                               <Tooltip title="Upload company cover image">
                                 <Button
-                                  onClick={handleCoverUpload}
+                                  onClick={(e) => handleFileState(setCover)}
                                   size="small"
                                   component="label"
                                   className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
@@ -338,7 +339,13 @@ const Company = () => {
                                   <input
                                     type="file"
                                     hidden
-                                    onChange={(e) => handleCover(e)}
+                                    onChange={(e) =>
+                                      handleFileUpload(
+                                        e,
+                                        setCoverName,
+                                        "coverCopy"
+                                      )
+                                    }
                                   />
                                 </Button>
                               </Tooltip>
@@ -350,7 +357,6 @@ const Company = () => {
                   </FormControl>
 
                   {associations.map((association, index) => {
-                    console.log(association.association);
                     return (
                       <FormControl
                         className={classes.formControl}
@@ -420,8 +426,8 @@ const Company = () => {
                   })}
                 </Grid>
                 <Grid item lg={12} className={classes.saveBtn}>
-                  <Button variant="contained" color="primary">
-                    Save and Continue
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
                   </Button>
                 </Grid>
               </Grid>

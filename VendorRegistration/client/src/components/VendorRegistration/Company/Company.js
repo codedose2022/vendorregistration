@@ -28,6 +28,7 @@ import { useHandleChange } from "../../../Context/TabsContext";
 import {uploadFile} from "../../../Actions/vendorRegActions";
 import { initialSave } from "../../../Actions/vendorRegActions";
 import { UserContext } from "../../../Context/UserContext";
+import { uploadFileToServer } from "../../../Helpers/FileUpload";
 
 const Company = () => {
   const classes = useStyles();
@@ -49,42 +50,23 @@ const Company = () => {
   const handleChange = (event) => {
     setVendorType(event.target.checked);
   };
-  const handleLicenseName = () => {
-    setIsLicense(true);
-  };
-  const handleOrgChartName = () => {
-    setOrgChart(true);
+  
+  const handleFileUpload = (e, setVal, val) => {
+    const filename = e.target.files[0].name;
+    setVal(filename);
+    uploadFileToServer(
+      e,
+      vendor,
+      val,
+      dispatch,
+      activeCompany,
+      token,
+      "companyInfo"
+    );
   };
 
-  const handleLicenseUpload = (e) => {
-    const filename = e.target.files[0].name;
-    setLicenseName(filename);
-    let vendorReg = "";
-    if (vendor.vendors.length > 0) {
-      vendorReg = vendor.vendors.filter(
-        (res) => res.companyDetailId === activeCompany.activeCompany._id
-      );
-    }
-    const vendorId =  vendorReg.length > 0 ? vendorReg[0]._id : "";
-    const formData = new FormData();
-    formData.append("file", e.target.files[0]);
-    formData.append("sectionName", "companyInfo");
-    dispatch(uploadFile(formData, token, vendorId ,"licenseCopy"));
-  };
-  const handleOrgChartUpload = (e) => {
-    const filename = e.target.files[0].name;
-    setOrgChartName(filename);
-    let vendorReg = "";
-    if (vendor.vendors.length > 0) {
-      vendorReg = vendor.vendors.filter(
-        (res) => res.companyDetailId === activeCompany.activeCompany._id
-      );
-    }
-    const vendorId =  vendorReg.length > 0 ? vendorReg[0]._id : "";
-    const formData = new FormData();
-    formData.append("file", e.target.files[0]);
-    formData.append("sectionName", "companyInfo");
-    dispatch(uploadFile(formData, token, vendorId ,"orgStructure"));
+  const handleFileState = (setFile) => {
+    setFile(true);
   };
 
   const handleCommentModal = () => {
@@ -745,7 +727,7 @@ const Company = () => {
                             <InputAdornment position="end">
                               <Tooltip title="Upload License">
                                 <Button
-                                  onClick={handleLicenseName}
+                                  onClick={(e)=>handleFileState(setIsLicense)}
                                   id="license"
                                   size="small"
                                   component="label"
@@ -755,7 +737,7 @@ const Company = () => {
                                   <input
                                     type="file"
                                     hidden
-                                    onChange={(e) => handleLicenseUpload(e)}
+                                    onChange={(e) => handleFileUpload(e,setLicenseName,"licenseCopy")}
                                   />
                                 </Button>
                               </Tooltip>
@@ -790,7 +772,7 @@ const Company = () => {
                             <InputAdornment position="end">
                               <Tooltip title="Upload organization chart">
                                 <Button
-                                  onClick={handleOrgChartName}
+                                  onClick={(e)=>handleFileState(setOrgChart)}
                                   id="orgChart"
                                   size="small"
                                   component="label"
@@ -800,7 +782,7 @@ const Company = () => {
                                   <input
                                     type="file"
                                     hidden
-                                    onChange={(e) => handleOrgChartUpload(e)}
+                                    onChange={(e) => handleFileUpload(e,setOrgChartName,"orgStructure")}
                                   />
                                 </Button>
                               </Tooltip>

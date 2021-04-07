@@ -7,14 +7,14 @@ export const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const folderName = req.header("vendorId");
     if (folderName) {
-      if (!fs.existsSync(`Y:/images/${folderName}`)) {
-        fs.mkdirSync(`Y:/images/${folderName}`);
-        cb(null, `Y:/images/${folderName}`);
+      if (!fs.existsSync(`Z:/images/${folderName}`)) {
+        fs.mkdirSync(`Z:/images/${folderName}`);
+        cb(null, `Z:/images/${folderName}`);
       } else {
-        cb(null, `Y:/images/${folderName}`);
+        cb(null, `Z:/images/${folderName}`);
       }
     } else {
-      cb(null, `Y:/images/initialReg`);
+      cb(null, `Z:/images/initialReg`);
     }
   },
 

@@ -1,26 +1,26 @@
 import {
-  Container,
-  Grid,
-  TextField,
-  Typography,
-  FormControl,
   Button,
+  Container,
+  FormControl,
+  Grid,
   InputAdornment,
-  Tooltip,
   Paper,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@material-ui/core";
-import React, { useContext , useState } from "react";
-import useStyles from "../VendorRegistrationStyles";
+import AttachFileIcon from "@material-ui/icons/AttachFile";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
-import ModalPop from "../../Modal/ModalPop";
-import AttachFileIcon from "@material-ui/icons/AttachFile";
+import * as Yup from "yup";
 import { initialSave } from "../../../Actions/vendorRegActions";
 import { useHandleChange } from "../../../Context/TabsContext";
-import {uploadFile} from "../../../Actions/vendorRegActions";
 import { UserContext } from "../../../Context/UserContext";
+import { uploadFileToServer } from "../../../Helpers/FileUpload";
+import ModalPop from "../../Modal/ModalPop";
+import useStyles from "../VendorRegistrationStyles";
 
 const BankAccount = () => {
   const { user, activeCompany, token, vendor } = useContext(UserContext);
@@ -45,17 +45,15 @@ const BankAccount = () => {
   const handleIbanUpload = (e) => {
     const filename = e.target.files[0].name;
     setIbanName(filename);
-    let vendorReg = "";
-    if (vendor.vendors.length > 0) {
-      vendorReg = vendor.vendors.filter(
-        (res) => res.companyDetailId === activeCompany.activeCompany._id
-      );
-    }
-    const vendorId =  vendorReg.length > 0 ? vendorReg[0]._id : "";
-    const formData = new FormData();
-    formData.append("file", e.target.files[0]);
-    formData.append("sectionName", "bankInfo");
-    dispatch(uploadFile(formData, token, vendorId ,"ibanCopy"));
+    uploadFileToServer(
+      e,
+      vendor,
+      "ibanCopy",
+      dispatch,
+      activeCompany,
+      token,
+      "bankInfo"
+    );
   };
 
   const formik = useFormik({
@@ -65,7 +63,7 @@ const BankAccount = () => {
       accNo: "",
       ibanNo: "",
       swiftCode: "",
-      tel: ""
+      tel: "",
     },
     validationSchema: Yup.object({
       bankName: Yup.string().required("Required"),
@@ -89,9 +87,9 @@ const BankAccount = () => {
         vendorId: vendorReg.length > 0 ? vendorReg[0]._id : "",
         companyId: activeCompany.activeCompany._id,
       };
-   
-    dispatch(initialSave(reqData, token,HandleChange,"4"));
-    }
+
+      dispatch(initialSave(reqData, token, HandleChange, "4"));
+    },
   });
 
   return (

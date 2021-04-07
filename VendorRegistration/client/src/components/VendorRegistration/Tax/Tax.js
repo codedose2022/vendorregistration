@@ -25,6 +25,7 @@ import { useDispatch } from "react-redux";
 import { initialSave } from "../../../Actions/vendorRegActions";
 import { useHandleChange } from "../../../Context/TabsContext";
 import { UserContext } from "../../../Context/UserContext";
+import { uploadFileToServer } from "../../../Helpers/FileUpload";
 
 const Tax = () => {
   const classes = useStyles();
@@ -54,17 +55,15 @@ const Tax = () => {
   const handleVatUpload = (e) => {
     const filename = e.target.files[0].name;
     setVatName(filename);
-    let vendorReg = "";
-    if (vendor.vendors.length > 0) {
-      vendorReg = vendor.vendors.filter(
-        (res) => res.companyDetailId === activeCompany.activeCompany._id
-      );
-    }
-    const vendorId =  vendorReg.length > 0 ? vendorReg[0]._id : "";
-    const formData = new FormData();
-    formData.append("file", e.target.files[0]);
-    formData.append("sectionName", "taxInfo");
-    dispatch(uploadFile(formData, token, vendorId ,"vatCopy"));
+    uploadFileToServer(
+      e,
+      vendor,
+      "vatCopy",
+      dispatch,
+      activeCompany,
+      token,
+      "taxInfo"
+    );
   };
 
   const formik = useFormik({
@@ -214,7 +213,7 @@ const Tax = () => {
                     <Grid item xs={12} lg={6}>
                       <FormControl className={classes.formControl} fullWidth>
                         <TextField
-                          label={!isVat ? "IBAN confirmation letter" : vatName}
+                          label={!isVat ? "VAT certificate" : vatName}
                           disabled
                           id="vatCopy"
                           name="vatCopy"
