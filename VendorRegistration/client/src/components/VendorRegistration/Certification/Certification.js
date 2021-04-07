@@ -21,12 +21,16 @@ import ModalPop from "../../Modal/ModalPop";
 import Certifications from "../../../Constants/Certifications";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 import _ from "lodash";
+import { useHandleChange } from "../../../Context/TabsContext";
+import { useDispatch } from "react-redux";
 
 const Certification = () => {
   const classes = useStyles();
 
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [open, setOpen] = useState({});
+  const HandleChange = useHandleChange();
+  const dispatch = useDispatch();
   const [certType, setCertType] = useState([
     { qualityPolicyStatement: "" },
     { qualityPolicyStatementEvid: "" },
@@ -86,12 +90,14 @@ const Certification = () => {
       tinNo: "",
     },
     validationSchema: Yup.object({
-      vatNo: Yup.string().required("Required"),
-      vatCopy: Yup.string().required("Required"),
-      tinNo: Yup.string().required("Required"),
+      // vatNo: Yup.string().required("Required"),
+      // vatCopy: Yup.string().required("Required"),
+      // tinNo: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      HandleChange(null,5);
+
+      // alert(JSON.stringify(values, null, 2));
     },
   });
   return (
@@ -111,11 +117,11 @@ const Certification = () => {
               <Grid container>
                 {Certifications.map((certificate, index) => {
                   return (
-                    <Grid item lg={12} sm={12} xs={12}>
+                    <Grid key={index} item lg={12} sm={12} xs={12}>
                       <Grid
                         container
                         className={classes.qustionsContainer}
-                        key={index}
+                       
                       >
                         <Grid
                           item
@@ -220,7 +226,7 @@ const Certification = () => {
                   );
                 })}
                 <Grid item lg={12} className={classes.saveBtn}>
-                  <Button variant="contained" color="primary">
+                  <Button type="submit" variant="contained" color="primary">
                     Save and Continue
                   </Button>
                 </Grid>

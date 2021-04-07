@@ -18,8 +18,11 @@ import ProductsServices from "../../../Constants/ProductsServices";
 import DoneIcon from "@material-ui/icons/Done";
 import Close from "@material-ui/icons/Close";
 import WarningIcon from "@material-ui/icons/Warning";
+import { useHandleChange } from "../../../Context/TabsContext";
+import { useDispatch } from "react-redux";
+import { initialSave } from "../../../Actions/vendorRegActions";
 
-const Products = () => {
+const Products = ({ user, vendor, token, activeCompany }) => {
   const classes = useStyles();
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [searchResult, setSearchResult] = useState(false);
@@ -28,7 +31,8 @@ const Products = () => {
   const [filteredResult, setFilteredResult] = useState([]);
   const [addedProduct, setAddedProduct] = useState([]);
   const [productExists, setProductExists] = useState(false);
-
+  const dispatch = useDispatch();
+  const HandleChange = useHandleChange();
   const handleClose = () => {
     setAddCommentModal(false);
   };
@@ -84,6 +88,25 @@ const Products = () => {
     // setFilteredResult(products);
   };
 
+  const handleSubmit = () =>{
+    alert(addedProduct);
+    console.log(addedProduct);
+    let vendorReg = "";
+    if (vendor.vendors.length > 0) {
+      vendorReg = vendor.vendors.filter(
+        (res) => res.companyDetailId === activeCompany.activeCompany._id
+      );
+    }
+    const reqData = {
+      productInfo: {product:addedProduct},
+      initRegId: user._id,
+      vendorId: vendorReg.length > 0 ? vendorReg[0]._id : "",
+      companyId: activeCompany.activeCompany._id,
+    };
+ 
+  dispatch(initialSave(reqData, token,HandleChange,"6"));
+
+  }
   return (
     <Container className={classes.mainContainer}>
       <Grid container>
@@ -200,7 +223,7 @@ const Products = () => {
               })}
             <Grid item lg={12} xs={12}>
               <Grid item lg={12} xs={12} className={classes.saveBtn}>
-                <Button variant="contained" color="primary">
+                <Button onClick={handleSubmit} type="submit" variant="contained" color="primary">
                   Save and Continue
                 </Button>
               </Grid>

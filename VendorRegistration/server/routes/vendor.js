@@ -13,7 +13,7 @@ const router = express.Router();
 
 let upload = multer({ storage, fileFilter });
 
-router.post("/initialSave", initialSave);
+router.post("/initialSave", auth, initialSave);
 
 router.post("/submit", submit);
 
@@ -29,6 +29,6 @@ vendorId : 605adb55f740811728d958dc
 fieldName :qmsCertCopy
 } */
 
-router.post("/uploadFile", upload.single("file"),uploadFile);
+router.post("/uploadFile", auth, upload.single("file"),uploadFile);
 
 export default router;

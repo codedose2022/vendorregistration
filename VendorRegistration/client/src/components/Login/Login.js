@@ -102,7 +102,7 @@ export default function Login() {
                 name='username'
                 autoComplete='email'
                 value={loginData.username}
-                formHelperTextProps={{
+                FormHelperTextProps={{
                   className: classes.helperTextError,
                 }}
                 helperText={
@@ -125,7 +125,7 @@ export default function Login() {
                 label='Password'
                 type={showPassword ? "text" : "password"}
                 id='password'
-                formHelperTextProps={{
+                FormHelperTextProps={{
                   className: classes.helperTextError,
                 }}
                 onChange={(e) =>

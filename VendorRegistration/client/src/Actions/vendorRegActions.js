@@ -58,3 +58,43 @@ export const addNewCompany = (
     errCallback("Please try again later");
   }
 };
+
+export const initialSave = (reqData, token, HandleChange,newVal) => async (
+  dispatch
+) => {
+  try {
+    const { data } = await api.initialSave(reqData, token);
+    const successStatusCd = _.get(data, "status", "");
+    if (successStatusCd === responseStatusConstants.SUCCESS) {
+      console.log("success");
+     HandleChange(null,parseInt(newVal));
+     // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
+    } else {
+      console.log("no success");
+      //errCallback(_.get(data, "message", ""));
+    }
+  } catch (error) {
+    console.log("catch");
+    //errCallback("Please try again later");
+  }
+};
+
+export const uploadFile = (reqData, token, vendorId, fieldName) => async (
+  dispatch
+) => {
+  try {
+    console.log(reqData, token, vendorId, fieldName)
+    const { data } = await api.uploadFile(reqData, token,vendorId, fieldName);
+    const successStatusCd = _.get(data, "status", "");
+    if (successStatusCd === responseStatusConstants.SUCCESS) {
+      console.log("success");
+     // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
+    } else {
+      console.log("no success");
+      //errCallback(_.get(data, "message", ""));
+    }
+  } catch (error) {
+    console.log("catch");
+    //errCallback("Please try again later");
+  }
+};

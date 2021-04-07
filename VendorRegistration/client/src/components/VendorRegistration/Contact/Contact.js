@@ -18,10 +18,13 @@ import ModalPop from "../../Modal/ModalPop";
 import AddIcon from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
 import Fab from "@material-ui/core/Fab";
+import { useDispatch } from "react-redux";
+import { useHandleChange } from "../../../Context/TabsContext";
 
 const Contact = () => {
   const classes = useStyles();
-
+  const dispatch = useDispatch();
+  const HandleChange = useHandleChange();
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [contacts, setContacts] = useState([
     {
@@ -73,20 +76,20 @@ const Contact = () => {
       altEmail: "",
     },
     validationSchema: Yup.object({
-      inChargeFor: Yup.string().required("Required"),
-      title: Yup.string().required("Required"),
-      fname: Yup.string().required("Required"),
-      lname: Yup.string().required("Required"),
-      position: Yup.string().required("Required"),
-      mob: Yup.string().required("Required"),
-      tel: Yup.string().required("Required"),
-      email: Yup.string().email("Invalid email address").required("Required"),
-      altEmail: Yup.string()
-        .email("Invalid email address")
-        .required("Required"),
+      // inChargeFor: Yup.string().required("Required"),
+      // title: Yup.string().required("Required"),
+      // fname: Yup.string().required("Required"),
+      // lname: Yup.string().required("Required"),
+      // position: Yup.string().required("Required"),
+      // mob: Yup.string().required("Required"),
+      // tel: Yup.string().required("Required"),
+      // email: Yup.string().email("Invalid email address").required("Required"),
+      // altEmail: Yup.string()
+      //   .email("Invalid email address")
+      //   .required("Required"),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      HandleChange(null,7);
     },
   });
   return (
@@ -447,7 +450,7 @@ const Contact = () => {
                 );
               })}
               <Grid item lg={12} className={classes.saveBtn}>
-                <Button variant="contained" color="primary">
+                <Button type="submit" variant="contained" color="primary">
                   Save and Continue
                 </Button>
               </Grid>

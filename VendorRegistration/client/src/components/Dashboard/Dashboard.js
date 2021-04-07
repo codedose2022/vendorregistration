@@ -15,7 +15,7 @@ import Products from "../VendorRegistration/Products/Products";
 import Certification from "../VendorRegistration/Certification/Certification";
 import Applications from "./Applications/Applications";
 
-const Dashboard = (props) => {
+const Dashboard = () => {
   const state = useSelector((state) => state);
   const classes = useStyles();
   const activeMainTabs = _.get(state, "ChangeTabs.activeTab", "Dashboard");
@@ -28,7 +28,7 @@ const Dashboard = (props) => {
           <HorizontalTabs />
           {dashboardTabs === 0 && (
             <>
-              <TabPanel value={0} index={0} content={<Profile content = {props}/>} />
+              <TabPanel value={0} index={0} content={<Profile />} />
             </>
           )}
           {dashboardTabs === 1 && (

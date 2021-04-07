@@ -6,7 +6,6 @@ import useStyles from "../Sidebar/sideBarStyles";
 import MenuDrawer from "../Sidebar/MenuDrawer/MenuDrawer";
 
 const SideBarDashboard = (props) => {
-  
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -20,7 +19,10 @@ const SideBarDashboard = (props) => {
             variant="permanent"
             open
           >
-            <MenuDrawer  mobileOpen={props.mobileOpen} setMobileOpen = {props.setMobileOpen}/>
+            <MenuDrawer
+              mobileOpen={props.mobileOpen}
+              setMobileOpen={props.setMobileOpen}
+            />
           </Drawer>
         )}
         <Hidden xsDown implementation="css">
@@ -31,7 +33,7 @@ const SideBarDashboard = (props) => {
             variant="permanent"
             open
           >
-            <MenuDrawer/>
+            <MenuDrawer />
           </Drawer>
         </Hidden>
       </nav>

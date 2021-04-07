@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import {
   AppBar,
   IconButton,
@@ -29,6 +29,7 @@ import { validateField } from "../../Helpers/validationHelper";
 import { addNewCompany } from "../../Actions/vendorRegActions";
 import { Alert } from "@material-ui/lab";
 import Snackbar from "@material-ui/core/Snackbar";
+import { UserContext } from "../../Context/UserContext";
 
 const StyledMenu = withStyles({
   paper: {
@@ -51,13 +52,14 @@ const StyledMenu = withStyles({
   />
 ));
 
-const MainNavBar = (props) => {
+const MainNavBar = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
   const dispatch = useDispatch();
-  const company = props.user.companyDetail.filter(
+  const {user,activeCompany,token} = useContext(UserContext);
+  const company = user.companyDetail.filter(
     (company) => company.status === "approved"
   );
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -141,14 +143,13 @@ const MainNavBar = (props) => {
       for (let key in newCompany) {
         coFormData.append(key, newCompany[key]);
       }
-      coFormData.append("_id", props.user._id);
-
+      coFormData.append("_id",user._id);
       dispatch(
         addNewCompany(
           coFormData,
           setServiceErrors,
-          props.token,
-          props.user._id,
+          token,
+          user._id,
           successCallback
         )
       );
@@ -229,7 +230,7 @@ const MainNavBar = (props) => {
                     color='secondary'
                     style={getStyleForMenu(
                       cmpny.companyName[0],
-                      props.activeCompany
+                      activeCompany
                     )}
                   >
                     {cmpny.companyName[0]}

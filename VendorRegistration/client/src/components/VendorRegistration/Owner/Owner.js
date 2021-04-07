@@ -18,10 +18,13 @@ import ModalPop from "../../Modal/ModalPop";
 import AddIcon from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
 import Fab from "@material-ui/core/Fab";
+import { useDispatch } from "react-redux";
+import { useHandleChange } from "../../../Context/TabsContext";
 
-const Owner = () => {
+const Owner = (props) => {
   const classes = useStyles();
-
+  const dispatch = useDispatch();
+  const HandleChange = useHandleChange();
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [owners, setOwners] = useState([
     {
@@ -69,16 +72,16 @@ const Owner = () => {
       email: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Required"),
-      designation: Yup.string().required("Required"),
-      percentOfShare: Yup.string().required("Required"),
-      nationality: Yup.string().required("Required"),
-      tel: Yup.string().required("Required"),
-      mob: Yup.string().required("Required"),
-      email: Yup.string().email("Invalid email address").required("Required"),
+      // name: Yup.string().required("Required"),
+      // designation: Yup.string().required("Required"),
+      // percentOfShare: Yup.string().required("Required"),
+      // nationality: Yup.string().required("Required"),
+      // tel: Yup.string().required("Required"),
+      // mob: Yup.string().required("Required"),
+      // email: Yup.string().email("Invalid email address").required("Required"),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      HandleChange(null, 2);
     },
   });
   return (
@@ -90,14 +93,19 @@ const Owner = () => {
           </Typography>
         </Grid>
         <Grid item lg={12}>
-        <Paper elevation={2} square={true} className={classes.customPaper} >
+          <Paper elevation={2} square={true} className={classes.customPaper}>
             <form
               className={classes.companyForm}
               onSubmit={formik.handleSubmit}
             >
               {owners.map((owner, index) => {
                 return (
-                  <Paper elevation={0} square={true} className={`${classes.customPaper} ${classes.borderedPaper}`} key={index}>
+                  <Paper
+                    elevation={0}
+                    square={true}
+                    className={`${classes.customPaper} ${classes.borderedPaper}`}
+                    key={index}
+                  >
                     <Grid container className={classes.relative}>
                       <Grid item lg={12} className={classes.addMoreBtn}>
                         {index === 0 && (
@@ -376,12 +384,12 @@ const Owner = () => {
                 );
               })}
               <Grid item lg={12} className={classes.saveBtn}>
-                <Button variant="contained" color="primary">
+                <Button type="submit" variant="contained" color="primary">
                   Save and Continue
                 </Button>
               </Grid>
             </form>
-            </Paper>
+          </Paper>
         </Grid>
       </Grid>
       <ModalPop

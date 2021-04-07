@@ -1,9 +1,8 @@
-import React, {useState} from "react";
-import {Tabs, Tab} from "@material-ui/core/";
-import useStyles from './TabStyles'
+import { Tab, Tabs } from "@material-ui/core/";
+import React from "react";
 import VendorRegisterTabs from "../../Constants/VendorRegisterTabs";
-import { useDispatch, useSelector } from "react-redux";
-import _ from "lodash";
+import { useHandleChange, useValue } from "../../Context/TabsContext";
+import useStyles from "./TabStyles";
 
 function a11yProps(index) {
   return {
@@ -12,16 +11,10 @@ function a11yProps(index) {
   };
 }
 
-export default function VerticalTabs(props) {
+export default function VerticalTabs() {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const state = useSelector((state) => state);
-  const [value, setValue] = useState(_.get(state, 'ChangeTabs.selectedTab',0))
-  const handleChange = (event, newValue) => {
-    props.mobileOpen && props.setMobileOpen(false);
-    setValue(newValue);
-    dispatch ({type: 'SIDEBAR_VENDOR_TABS_CHANGE', payload: newValue});
-  };
+  const value = useValue();
+  const handleChange = useHandleChange();
 
   return (
     <div className={classes.verticalTabs}>

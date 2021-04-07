@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import SideBarDashboard from "../Sidebar/SideBar";
 import MainNavBar from "../MainNav/MainNav";
 import Dashboard from "../Dashboard/Dashboard";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import {
@@ -12,6 +12,9 @@ import {
 import { isTokenValid } from "../../Api/index";
 import Alert from "@material-ui/lab/Alert";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import _ from "lodash";
+import { TabsContext } from "../../Context/TabsContext";
+import { UserContext } from "../../Context/UserContext";
 
 const theme = createMuiTheme({
   palette: {
@@ -53,6 +56,7 @@ const theme = createMuiTheme({
 
 export default function Home(props) {
   const dispatch = useDispatch();
+  const { user, token } = useContext(UserContext);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [serviceErrors, setServiceErrors] = useState("");
@@ -60,17 +64,15 @@ export default function Home(props) {
   useEffect(() => {
     const loadDashboard = async () => {
       try {
-        const tokenRes = await isTokenValid(props.token);
+        const tokenRes = await isTokenValid(token);
         if (!tokenRes.data) {
           localStorage.setItem("auth-token", "");
           localStorage.setItem("master_class", "");
           history.push("/");
         } else {
-          dispatch(
-            getAllRegistrations(props.user._id, props.token, setServiceErrors)
-          );
+          dispatch(getAllRegistrations(user._id, token, setServiceErrors));
 
-          dispatch(getUserInfo(props.user._id, props.token, setServiceErrors));
+          dispatch(getUserInfo(user._id, token, setServiceErrors));
           setIsLoading(false);
         }
       } catch (error) {
@@ -84,28 +86,18 @@ export default function Home(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      {serviceErrors && <Alert severity='error'> {serviceErrors} </Alert>}
+      {serviceErrors && <Alert severity="error"> {serviceErrors} </Alert>}
       {!serviceErrors && isLoading ? (
         <CircularProgress
           style={{ position: "absolute", left: "50%", top: "50%" }}
         />
       ) : (
         <>
-          <MainNavBar
-            user={props.user}
-            activeCompany={props.activeCompany}
-            token={props.token}
-          />
-          <SideBarDashboard
-            user={props.user}
-            token={props.token}
-            activeCompany={props.activeCompany}
-          />
-          <Dashboard
-            user={props.user}
-            token={props.token}
-            activeCompany={props.activeCompany}
-          />
+          <TabsContext>
+            <MainNavBar />
+            <SideBarDashboard />
+            <Dashboard />
+          </TabsContext>
         </>
       )}
     </ThemeProvider>

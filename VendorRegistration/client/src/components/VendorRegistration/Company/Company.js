@@ -23,9 +23,16 @@ import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ModalPop from "../../Modal/ModalPop";
+import { useDispatch } from "react-redux";
+import { useHandleChange } from "../../../Context/TabsContext";
+import {uploadFile} from "../../../Actions/vendorRegActions";
+import { initialSave } from "../../../Actions/vendorRegActions";
 
-const Company = () => {
+const Company = ({ user, vendor, token, activeCompany }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const HandleChange = useHandleChange();
+
   const [vendorType, setVendorType] = useState("");
   const [isLicense, setIsLicense] = useState(false);
   const [isOrgChart, setOrgChart] = useState(false);
@@ -51,10 +58,32 @@ const Company = () => {
   const handleLicenseUpload = (e) => {
     const filename = e.target.files[0].name;
     setLicenseName(filename);
+    let vendorReg = "";
+    if (vendor.vendors.length > 0) {
+      vendorReg = vendor.vendors.filter(
+        (res) => res.companyDetailId === activeCompany.activeCompany._id
+      );
+    }
+    const vendorId =  vendorReg.length > 0 ? vendorReg[0]._id : "";
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    formData.append("sectionName", "companyInfo");
+    dispatch(uploadFile(formData, token, vendorId ,"licenseCopy"));
   };
   const handleOrgChartUpload = (e) => {
     const filename = e.target.files[0].name;
     setOrgChartName(filename);
+    let vendorReg = "";
+    if (vendor.vendors.length > 0) {
+      vendorReg = vendor.vendors.filter(
+        (res) => res.companyDetailId === activeCompany.activeCompany._id
+      );
+    }
+    const vendorId =  vendorReg.length > 0 ? vendorReg[0]._id : "";
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    formData.append("sectionName", "companyInfo");
+    dispatch(uploadFile(formData, token, vendorId ,"orgStructure"));
   };
 
   const handleCommentModal = () => {
@@ -77,7 +106,6 @@ const Company = () => {
   const handleChangeInput = (index, e) => {
     const values = [...sisterCompanies];
     values[index][e.target.name] = e.target.value;
-    console.log(e.target.value);
     setSisterCompanies(values);
   };
 
@@ -99,33 +127,48 @@ const Company = () => {
       yearOfEst: "",
       licenseNo: "",
       licenseExpDate: "",
-      licenseCopy: "",
-      orgStructure: "",
       sisCompanies: "",
     },
     validationSchema: Yup.object({
-      companyName: Yup.string().required("Required"),
-      address1: Yup.string().required("Required"),
-      address2: Yup.string().required("Required"),
-      city: Yup.string().required("Required"),
-      emirates: Yup.string().required("Required"),
-      country: Yup.string().required("Required"),
-      poBox: Yup.string().required("Required"),
-      email: Yup.string().email("Invalid email address").required("Required"),
-      website: Yup.string().required("Required"),
-      phoneNo: Yup.string().required("Required"),
-      faxNo: Yup.string().required("Required"),
-      noOfEmp: Yup.string().required("Required"),
-      vendorType: Yup.string().required("Required"),
-      yearOfEst: Yup.string().required("Required"),
-      licenseNo: Yup.string().required("Required"),
-      licenseExpDate: Yup.string().required("Required"),
-      licenseCopy: Yup.string().required("Required"),
-      orgStructure: Yup.string().required("Required"),
-      sisCompanies: Yup.string().required("Required"),
+      //   companyName: Yup.string().required("Required"),
+      //   address1: Yup.string().required("Required"),
+      //   address2: Yup.string().required("Required"),
+      //   city: Yup.string().required("Required"),
+      //   emirates: Yup.string().required("Required"),
+      //   country: Yup.string().required("Required"),
+      //   poBox: Yup.string().required("Required"),
+      //   email: Yup.string().email("Invalid email address").required("Required"),
+      //   website: Yup.string().required("Required"),
+      //   phoneNo: Yup.string().required("Required"),
+      //   faxNo: Yup.string().required("Required"),
+      //   noOfEmp: Yup.string().required("Required"),
+      //   vendorType: Yup.string().required("Required"),
+      //   yearOfEst: Yup.string().required("Required"),
+      //   licenseNo: Yup.string().required("Required"),
+      //   licenseExpDate: Yup.string().required("Required"),
+      //  licenseCopy: Yup.string().required("Required"),
+      //  orgStructure: Yup.string().required("Required"),
+      //  sisCompanies: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      HandleChange(null,1);
+      // const val = [...sisterCompanies];
+      // console.log(val);
+  //     values.sisCompanies=sisterCompanies;
+  //     let vendorReg = "";
+  //     if (vendor.vendors.length > 0) {
+  //       vendorReg = vendor.vendors.filter(
+  //         (res) => res.companyDetailId === activeCompany.activeCompany._id
+  //       );
+  //     }
+  //     const reqData = {
+  //       companyInfo: values,
+  //       initRegId: user._id,
+  //       vendorId: vendorReg.length > 0 ? vendorReg[0]._id : "",
+  //       companyId: activeCompany.activeCompany._id,
+  //     };
+  //     console.log(reqData)
+  //  dispatch(initialSave(reqData, token,HandleChange,"1"));
     },
   });
   return (
@@ -473,7 +516,7 @@ const Company = () => {
                           </InputAdornment>
                         ),
                       }}
-                      {...formik.getFieldProps("faxNofaxNo")}
+                      {...formik.getFieldProps("faxNo")}
                     />
                     {formik.touched.faxNo && formik.errors.faxNo ? (
                       <div className={classes.error}>{formik.errors.faxNo}</div>
@@ -547,7 +590,7 @@ const Company = () => {
                     component="fieldset"
                     className={classes.formControl}
                     fullWidth
-                    style={{marginTop: '.75rem'}}
+                    style={{ marginTop: ".75rem" }}
                   >
                     <div className={classes.flex}>
                       <FormLabel component="legend">Vendor type</FormLabel>
@@ -767,7 +810,6 @@ const Company = () => {
                     />
                   </FormControl>
                   {sisterCompanies.map((siscompany, index) => {
-                    console.log(siscompany.sisterCompany);
                     return (
                       <FormControl
                         className={classes.formControl}
@@ -837,7 +879,7 @@ const Company = () => {
                   })}
                 </Grid>
                 <Grid item lg={12} className={classes.saveBtn}>
-                  <Button variant="contained" color="primary">
+                  <Button type="submit" variant="contained" color="primary">
                     Save and Continue
                   </Button>
                 </Grid>

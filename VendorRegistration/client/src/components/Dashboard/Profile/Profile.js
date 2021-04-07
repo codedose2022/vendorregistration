@@ -2,9 +2,12 @@ import { Container, Grid, Link, Paper, Typography } from "@material-ui/core";
 import React from "react";
 import useStyles from "./profileStyles";
 import BusinessIcon from "@material-ui/icons/Business";
+import { useContext } from "react";
+import { UserContext } from "../../../Context/UserContext";
 
-const Profile = (props) => {
+const Profile = () => {
   const classes = useStyles();
+  const {user, activeCompany, token, vendor} = useContext(UserContext);
   return (
     <Container className={classes.profileContainer}>
       <Grid container>
@@ -16,7 +19,7 @@ const Profile = (props) => {
               </Grid>
               <Grid item lg={8} xs={12} className={classes.profileContent}>
                 <Typography variant='h6' className={classes.upperCase}>
-                  {props.content.activeCompany.activeCompany.companyName[0]}
+                  {activeCompany.activeCompany.companyName[0]}
                 </Typography>
                 <Typography>Address Line 1</Typography>
                 <Typography>Address Line 2</Typography>
@@ -25,7 +28,7 @@ const Profile = (props) => {
                 <Typography>Country</Typography>
                 <hr />
                 <div className={classes.profileLicenseInfo}>
-                  <Typography>{props.content.activeCompany.activeCompany.licenseNo[0]}</Typography>
+                  <Typography>{activeCompany.activeCompany.licenseNo[0]}</Typography>
                   <Typography>
                     <Link to='/'>License copy</Link>
                   </Typography>
@@ -40,13 +43,13 @@ const Profile = (props) => {
               <Grid item lg={12}>
                 <div className={classes.personalName}>
                   <Typography variant='h6' className={`${classes.upperCase}`}>
-                    {props.content.user.fName[0] + " " + props.content.user.lName[0]}
+                    {user.fName[0] + " " + user.lName[0]}
                   </Typography>
                 </div>
                 <div className={classes.personalInfo}>
-                  <Typography>{props.content.user.designation[0]}</Typography>
-                  <Typography>{props.content.user.email[0]}</Typography>
-                  <Typography>{props.content.user.mobNo[0]}</Typography>
+                  <Typography>{user.designation[0]}</Typography>
+                  <Typography>{user.email[0]}</Typography>
+                  <Typography>{user.mobNo[0]}</Typography>
                 </div>
               </Grid>
             </Grid>
