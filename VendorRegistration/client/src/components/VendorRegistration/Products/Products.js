@@ -10,7 +10,7 @@ import {
   Card,
   CardContent,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import SearchIcon from "@material-ui/icons/Search";
 import ModalPop from "../../Modal/ModalPop";
@@ -21,9 +21,11 @@ import WarningIcon from "@material-ui/icons/Warning";
 import { useHandleChange } from "../../../Context/TabsContext";
 import { useDispatch } from "react-redux";
 import { initialSave } from "../../../Actions/vendorRegActions";
+import { UserContext } from "../../../Context/UserContext";
 
-const Products = ({ user, vendor, token, activeCompany }) => {
+const Products = () => {
   const classes = useStyles();
+  const { user, activeCompany, token, vendor } = useContext(UserContext);
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [searchResult, setSearchResult] = useState(false);
   const [value, setValue] = useState("");

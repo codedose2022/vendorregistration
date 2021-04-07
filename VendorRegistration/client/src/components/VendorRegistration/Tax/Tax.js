@@ -13,7 +13,7 @@ import {
   Radio,
   Paper,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
@@ -24,10 +24,12 @@ import {uploadFile} from "../../../Actions/vendorRegActions";
 import { useDispatch } from "react-redux";
 import { initialSave } from "../../../Actions/vendorRegActions";
 import { useHandleChange } from "../../../Context/TabsContext";
+import { UserContext } from "../../../Context/UserContext";
 
-const Tax = ({ user, vendor, token, activeCompany }) => {
+const Tax = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { user, activeCompany, token, vendor } = useContext(UserContext);
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [isTax, setisTax] = useState("");
   const [isVat, setIsVat] = useState(false);

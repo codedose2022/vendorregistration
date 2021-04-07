@@ -13,7 +13,7 @@ import {
   Tooltip,
   Paper,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import VendorType from "../../../Constants/VendorType";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
@@ -23,9 +23,11 @@ import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ModalPop from "../../Modal/ModalPop";
+import { UserContext } from "../../../Context/UserContext";
 
 const Company = () => {
   const classes = useStyles();
+  const { user, activeCompany, token, vendor } = useContext(UserContext);
   const [isIncorp, setIsIncorp] = useState(false);
   const [isPpt, setIsPpt] = useState(false);
   const [incorpName, setIncorpName] = useState("");

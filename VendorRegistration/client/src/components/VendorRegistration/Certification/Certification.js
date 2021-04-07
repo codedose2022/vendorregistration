@@ -12,7 +12,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
@@ -23,10 +23,11 @@ import AttachFileIcon from "@material-ui/icons/AttachFile";
 import _ from "lodash";
 import { useHandleChange } from "../../../Context/TabsContext";
 import { useDispatch } from "react-redux";
+import { UserContext } from "../../../Context/UserContext";
 
 const Certification = () => {
   const classes = useStyles();
-
+  const { user, activeCompany, token, vendor } = useContext(UserContext);
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [open, setOpen] = useState({});
   const HandleChange = useHandleChange();
@@ -34,7 +35,7 @@ const Certification = () => {
   const [certType, setCertType] = useState([
     { qualityPolicyStatement: "" },
     { qualityPolicyStatementEvid: "" },
-    { qualityCertificateIso: "" },
+    { qualityCertificateIso: "" }, 
     { qmsManual: "" },
     { orgChart: "" },
     { isoMandatoryProcedure: "" },

@@ -13,7 +13,7 @@ import {
   Tooltip,
   Paper,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import VendorType from "../../../Constants/VendorType";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
@@ -27,12 +27,13 @@ import { useDispatch } from "react-redux";
 import { useHandleChange } from "../../../Context/TabsContext";
 import {uploadFile} from "../../../Actions/vendorRegActions";
 import { initialSave } from "../../../Actions/vendorRegActions";
+import { UserContext } from "../../../Context/UserContext";
 
-const Company = ({ user, vendor, token, activeCompany }) => {
+const Company = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const HandleChange = useHandleChange();
-
+  const { user, activeCompany, token, vendor } = useContext(UserContext);
   const [vendorType, setVendorType] = useState("");
   const [isLicense, setIsLicense] = useState(false);
   const [isOrgChart, setOrgChart] = useState(false);

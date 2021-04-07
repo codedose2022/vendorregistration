@@ -9,7 +9,7 @@ import {
   Tooltip,
   Paper,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
@@ -20,10 +20,12 @@ import Close from "@material-ui/icons/Close";
 import Fab from "@material-ui/core/Fab";
 import { useDispatch } from "react-redux";
 import { useHandleChange } from "../../../Context/TabsContext";
+import { UserContext } from "../../../Context/UserContext";
 
 const Owner = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { user, activeCompany, token, vendor } = useContext(UserContext);
   const HandleChange = useHandleChange();
   const [addCommentModal, setAddCommentModal] = useState(false);
   const [owners, setOwners] = useState([
