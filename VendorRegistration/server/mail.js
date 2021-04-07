@@ -46,18 +46,26 @@ const getEmailData = (to, name, template, token) => {
 };
 export const sendEmail = (to, name, type, token) => {
   const smtpTransport = mailer.createTransport({
-    host: "smtp.zoho.com",
+    // host: "smtp.zoho.com",
+    // secureConnection: true,
+    // port: 465,
+    // auth: {
+    //   user: "sftdev16@mersatconsultants.com",
+    //   pass: "twHdv5Lb4KqL ",
+    // },
+    host: "smtp.mailtrap.io",
     secureConnection: true,
-    port: 465,
+    port: 2525,
     auth: {
-      user: "sftdev16@mersatconsultants.com",
-      pass: "twHdv5Lb4KqL ",
+      user: "3f544436cd0c33",
+      pass: "75397a792167e4",
     },
   });
 
   const mail = getEmailData(to, name, type, token);
   smtpTransport.sendMail(mail, function (error, response) {
     if (error) {
+      console.log(error)
       console.log("Invalid email address");
     } else {
       console.log("Email sent successfully");

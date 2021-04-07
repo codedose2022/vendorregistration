@@ -104,6 +104,7 @@ const MainNavBar = (props) => {
       file: "",
     });
     setTouched(false);
+    setLicenseName("")
   };
 
   const handleLicenseUpload = (e) => {
