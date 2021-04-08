@@ -13,7 +13,7 @@ export const login = (loginData, callback, history) => async (dispatch) => {
       dispatch({ type: "LOGIN", payload: true });
       let company = _.get(data, "userInfo.companyDetail", []);
       dispatch({ type: "CHANGE_COMPANY", payload: company[0] });
-      history.push("/home");
+      history.push("/main");
     } else {
       callback(_.get(data, "message", ""));
     }

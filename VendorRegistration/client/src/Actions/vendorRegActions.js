@@ -34,6 +34,7 @@ export const getUserInfo = (userId, token, errCallback) => async (dispatch) => {
     errCallback("Please try again later");
   }
 };
+
 export const addNewCompany = (
   newCompany,
   errCallback,

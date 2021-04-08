@@ -4,7 +4,8 @@ import Login from "./components/Login/Login";
 import PrivateRoute from "./PrivateRoute";
 import _ from "lodash";
 import { useSelector } from "react-redux";
-import {UserContext} from './Context/UserContext';
+import { UserContext } from "./Context/UserContext";
+import Main from "./components/MainDashboard/Main";
 
 function App() {
   const state = useSelector((state) => state);
@@ -16,16 +17,18 @@ function App() {
 
   return (
     <Router>
-      <Route exact path="/">
+      <Route exact path='/'>
         <Login />
       </Route>
       <Switch>
-        <PrivateRoute exact path="/home" loggedInStatus={loggedInStatus}>
-          <UserContext.Provider
-            value={{user, activeCompany, token, vendor }}>
-            <Home/>
-          </UserContext.Provider>
-        </PrivateRoute>
+        <UserContext.Provider value={{ user, activeCompany, token, vendor }}>
+          <PrivateRoute exact path='/home' loggedInStatus={loggedInStatus}>
+            <Home />
+          </PrivateRoute>
+          <PrivateRoute exact path='/main' loggedInStatus={loggedInStatus}>
+            <Main />
+          </PrivateRoute>
+        </UserContext.Provider>
       </Switch>
     </Router>
   );
