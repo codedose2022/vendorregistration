@@ -1,21 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
-import SideBarDashboard from "../Sidebar/SideBar";
-import MainNavBar from "../MainNav/MainNav";
-import Dashboard from "../Dashboard/Dashboard";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import Alert from "@material-ui/lab/Alert";
+import React, { useContext, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 import {
   getAllRegistrations,
-  getUserInfo,
-  getUserApplications
+  getUserApplications,
+  getUserInfo
 } from "../../Actions/vendorRegActions";
 import { isTokenValid } from "../../Api/index";
-import Alert from "@material-ui/lab/Alert";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import _ from "lodash";
 import { TabsContext } from "../../Context/TabsContext";
 import { UserContext } from "../../Context/UserContext";
+import Dashboard from "../Dashboard/Dashboard";
+import MainNavBar from "../MainNav/MainNav";
+import SideBarDashboard from "../Sidebar/SideBar";
 
 const theme = createMuiTheme({
   palette: {
@@ -57,11 +56,10 @@ const theme = createMuiTheme({
 
 export default function Home(props) {
   const dispatch = useDispatch();
-  const { user, token } = useContext(UserContext);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [serviceErrors, setServiceErrors] = useState("");
-
+  const { user, activeCompany, token, vendor } = useContext(UserContext);
   useEffect(() => {
     const loadDashboard = async () => {
       try {
@@ -74,7 +72,7 @@ export default function Home(props) {
           dispatch(getAllRegistrations(user._id, token, setServiceErrors));
           dispatch(getUserInfo(user._id, token, setServiceErrors));
           dispatch(getUserApplications(user._id, token));
-          
+
           setIsLoading(false);
         }
       } catch (error) {

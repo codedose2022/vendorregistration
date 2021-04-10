@@ -24,37 +24,13 @@ import moment from "moment";
 const Applications = () => {
   const classes = useStyles();
   const { application, activeCompany, vendor } = useContext(UserContext);
-  let vendorDetail = vendor.vendors.filter(
-    (ven) => ven.companyDetailId === activeCompany.activeCompany._id
-  );
+
   let applications = [];
-  if (vendorDetail.length) {
+  if (vendor.length) {
     applications = application.filter(
-      (app) => app.typeId === vendorDetail[0]._id
+      (app) => app.typeId === vendor[0]._id
     );
   }
-
-  console.log(application);
-  // const applications = [
-  //   {
-  //     slno: 1,
-  //     description: "New vendor registration",
-  //     date: "31/03/2021",
-  //     status: "Incomplete",
-  //   },
-  //   {
-  //     slno: 2,
-  //     description: "Amendment",
-  //     date: "20/03/2021",
-  //     status: "Approved",
-  //   },
-  //   {
-  //     slno: 3,
-  //     description: "Amendment",
-  //     date: "20/03/2021",
-  //     status: "Rejected",
-  //   },
-  // ];
 
   return (
     <Container className={classes.applicationContainer}>
@@ -90,12 +66,12 @@ const Applications = () => {
                           className={
                             getStatusOfApplication(
                               row.typeId,
-                              vendor.vendors
+                              vendor
                             ).toLowerCase() === "approved"
                               ? classes.approvedChip
                               : getStatusOfApplication(
                                   row.typeId,
-                                  vendor.vendors
+                                  vendor
                                 ).toLowerCase() === "rejected"
                               ? classes.rejectedChip
                               : classes.incompleteChip
@@ -103,12 +79,12 @@ const Applications = () => {
                           color={
                             getStatusOfApplication(
                               row.typeId,
-                              vendor.vendors
+                              vendor
                             ).toLowerCase() === "approved"
                               ? "primary"
                               : getStatusOfApplication(
                                   row.typeId,
-                                  vendor.vendors
+                                  vendor
                                 ).toLowerCase() === "rejected"
                               ? "error"
                               : "warning"
@@ -116,7 +92,7 @@ const Applications = () => {
                           size='small'
                           label={getStatusOfApplication(
                             row.typeId,
-                            vendor.vendors
+                            vendor
                           )}
                         />
                       </TableCell>

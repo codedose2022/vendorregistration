@@ -13,7 +13,7 @@ import {
   Tooltip,
   Paper,
 } from "@material-ui/core";
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import VendorType from "../../../Constants/VendorType";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
@@ -25,7 +25,7 @@ import * as Yup from "yup";
 import ModalPop from "../../Modal/ModalPop";
 import { useDispatch } from "react-redux";
 import { useHandleChange } from "../../../Context/TabsContext";
-import {uploadFile} from "../../../Actions/vendorRegActions";
+import { uploadFile } from "../../../Actions/vendorRegActions";
 import { initialSave } from "../../../Actions/vendorRegActions";
 import { UserContext } from "../../../Context/UserContext";
 import { uploadFileToServer } from "../../../Helpers/FileUpload";
@@ -46,23 +46,15 @@ const Company = () => {
       sisterCompany: "",
     },
   ]);
-
+  console.log(vendor);
   const handleChange = (event) => {
     setVendorType(event.target.checked);
   };
-  
+
   const handleFileUpload = (e, setVal, val) => {
     const filename = e.target.files[0].name;
     setVal(filename);
-    uploadFileToServer(
-      e,
-      vendor,
-      val,
-      dispatch,
-      activeCompany,
-      token,
-      "companyInfo"
-    );
+    uploadFileToServer(e, vendor, val, dispatch, token, "companyInfo");
   };
 
   const handleFileState = (setFile) => {
@@ -94,8 +86,8 @@ const Company = () => {
 
   const formik = useFormik({
     initialValues: {
-      companyName: "",
-      address1: "",
+      companyName: vendor.length ? vendor[0].companyInfo?.companyName : "",
+      address1: vendor.length ? vendor[0].companyInfo?.address1 : "",
       address2: "",
       city: "",
       emirates: "",
@@ -134,24 +126,15 @@ const Company = () => {
       //  sisCompanies: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
-      HandleChange(null,1);
-      // const val = [...sisterCompanies];
-      // console.log(val);
-  //     values.sisCompanies=sisterCompanies;
-  //     let vendorReg = "";
-  //     if (vendor.vendors.length > 0) {
-  //       vendorReg = vendor.vendors.filter(
-  //         (res) => res.companyDetailId === activeCompany.activeCompany._id
-  //       );
-  //     }
-  //     const reqData = {
-  //       companyInfo: values,
-  //       initRegId: user._id,
-  //       vendorId: vendorReg.length > 0 ? vendorReg[0]._id : "",
-  //       companyId: activeCompany.activeCompany._id,
-  //     };
-  //     console.log(reqData)
-  //  dispatch(initialSave(reqData, token,HandleChange,"1"));
+      values.sisCompanies = sisterCompanies;
+      const reqData = {
+        companyInfo: values,
+        initRegId: user._id,
+        vendorId: vendor.length > 0 ? vendor[0]._id : "",
+        companyId: activeCompany.activeCompany._id,
+      };
+
+      dispatch(initialSave(reqData, token, HandleChange, "1"));
     },
   });
   return (
@@ -727,7 +710,7 @@ const Company = () => {
                             <InputAdornment position="end">
                               <Tooltip title="Upload License">
                                 <Button
-                                  onClick={(e)=>handleFileState(setIsLicense)}
+                                  onClick={(e) => handleFileState(setIsLicense)}
                                   id="license"
                                   size="small"
                                   component="label"
@@ -737,7 +720,13 @@ const Company = () => {
                                   <input
                                     type="file"
                                     hidden
-                                    onChange={(e) => handleFileUpload(e,setLicenseName,"licenseCopy")}
+                                    onChange={(e) =>
+                                      handleFileUpload(
+                                        e,
+                                        setLicenseName,
+                                        "licenseCopy"
+                                      )
+                                    }
                                   />
                                 </Button>
                               </Tooltip>
@@ -772,7 +761,7 @@ const Company = () => {
                             <InputAdornment position="end">
                               <Tooltip title="Upload organization chart">
                                 <Button
-                                  onClick={(e)=>handleFileState(setOrgChart)}
+                                  onClick={(e) => handleFileState(setOrgChart)}
                                   id="orgChart"
                                   size="small"
                                   component="label"
@@ -782,7 +771,13 @@ const Company = () => {
                                   <input
                                     type="file"
                                     hidden
-                                    onChange={(e) => handleFileUpload(e,setOrgChartName,"orgStructure")}
+                                    onChange={(e) =>
+                                      handleFileUpload(
+                                        e,
+                                        setOrgChartName,
+                                        "orgStructure"
+                                      )
+                                    }
                                   />
                                 </Button>
                               </Tooltip>

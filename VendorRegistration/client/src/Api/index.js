@@ -42,3 +42,8 @@ export const uploadFile = (reqData, token, vendorId, fieldName) =>
   axios.post(`applications/getUserApplications`, initRegId, {
     headers: { "x-auth-token": token },
   });
+
+  export const submit = (reqData, token) =>
+  axios.post(`vendor/submit`, {vendorId:reqData}, {
+    headers: { "x-auth-token": token },
+  });

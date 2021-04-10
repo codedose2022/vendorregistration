@@ -10,7 +10,7 @@ import {
   Card,
   CardContent,
 } from "@material-ui/core";
-import React, { useState,useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import SearchIcon from "@material-ui/icons/Search";
 import ModalPop from "../../Modal/ModalPop";
@@ -22,6 +22,7 @@ import { useHandleChange } from "../../../Context/TabsContext";
 import { useDispatch } from "react-redux";
 import { initialSave } from "../../../Actions/vendorRegActions";
 import { UserContext } from "../../../Context/UserContext";
+import _ from "lodash";
 
 const Products = () => {
   const classes = useStyles();
@@ -31,7 +32,12 @@ const Products = () => {
   const [value, setValue] = useState("");
   const [isEmpty, setIsEmpty] = useState(false);
   const [filteredResult, setFilteredResult] = useState([]);
-  const [addedProduct, setAddedProduct] = useState([]);
+  const product = _.get(vendor[0], "productInfo.product", []);
+  const [addedProduct, setAddedProduct] = useState(product);
+  useEffect(() => {
+    setAddedProduct(product);
+  }, [vendor]);
+
   const [productExists, setProductExists] = useState(false);
   const dispatch = useDispatch();
   const HandleChange = useHandleChange();
@@ -90,25 +96,16 @@ const Products = () => {
     // setFilteredResult(products);
   };
 
-  const handleSubmit = () =>{
-    alert(addedProduct);
-    console.log(addedProduct);
-    let vendorReg = "";
-    if (vendor.vendors.length > 0) {
-      vendorReg = vendor.vendors.filter(
-        (res) => res.companyDetailId === activeCompany.activeCompany._id
-      );
-    }
+  const handleSubmit = () => {
     const reqData = {
-      productInfo: {product:addedProduct},
+      productInfo: { product: addedProduct },
       initRegId: user._id,
-      vendorId: vendorReg.length > 0 ? vendorReg[0]._id : "",
+      vendorId: vendor.length > 0 ? vendor[0]._id : "",
       companyId: activeCompany.activeCompany._id,
     };
- 
-  dispatch(initialSave(reqData, token,HandleChange,"6"));
 
-  }
+    dispatch(initialSave(reqData, token, HandleChange, "6"));
+  };
   return (
     <Container className={classes.mainContainer}>
       <Grid container>
@@ -142,7 +139,8 @@ const Products = () => {
             <div className={classes.resultError}>
               <WarningIcon />
               <Typography>
-                Uh Oh!! Your search returned no results. Try rephrasing your search.
+                Uh Oh!! Your search returned no results. Try rephrasing your
+                search.
               </Typography>
             </div>
           )}
@@ -187,7 +185,11 @@ const Products = () => {
         </Grid>
 
         <Grid item lg={12} xs={12}>
-          <Paper elevation={2} square={true} className={`${classes.customPaper} ${classes.padAdded}`}>
+          <Paper
+            elevation={2}
+            square={true}
+            className={`${classes.customPaper} ${classes.padAdded}`}
+          >
             {!addedProduct.length && (
               <div className={classes.resultError}>
                 <WarningIcon />
@@ -202,7 +204,8 @@ const Products = () => {
                 return (
                   <Grid
                     item
-                    lg={12} xs={12}
+                    lg={12}
+                    xs={12}
                     key={products}
                     className={classes.addedProducts}
                   >
@@ -225,7 +228,12 @@ const Products = () => {
               })}
             <Grid item lg={12} xs={12}>
               <Grid item lg={12} xs={12} className={classes.saveBtn}>
-                <Button onClick={handleSubmit} type="submit" variant="contained" color="primary">
+                <Button
+                  onClick={handleSubmit}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                >
                   Save and Continue
                 </Button>
               </Grid>

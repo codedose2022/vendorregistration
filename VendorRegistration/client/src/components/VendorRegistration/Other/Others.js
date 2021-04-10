@@ -14,18 +14,22 @@ import AttachFileIcon from "@material-ui/icons/AttachFile";
 import Close from "@material-ui/icons/Close";
 import CommentIcon from "@material-ui/icons/Comment";
 import { useFormik } from "formik";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect } from "react";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { UserContext } from "../../../Context/UserContext";
 import { uploadFileToServer } from "../../../Helpers/FileUpload";
 import ModalPop from "../../Modal/ModalPop";
 import useStyles from "../VendorRegistrationStyles";
+import { useHandleChange } from "../../../Context/TabsContext";
+import { initialSave } from "../../../Actions/vendorRegActions";
+import _ from "lodash";
 
 const Company = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { activeCompany, token, vendor } = useContext(UserContext);
+  const HandleChange = useHandleChange();
+  const { user,activeCompany, token, vendor } = useContext(UserContext);
   const [isIncorp, setIsIncorp] = useState(false);
   const [isPpt, setIsPpt] = useState(false);
   const [incorpName, setIncorpName] = useState("");
@@ -35,11 +39,17 @@ const Company = () => {
   const [cover, setCover] = useState(false);
   const [coverName, setCoverName] = useState("");
   const [addCommentModal, setAddCommentModal] = useState(false);
-  const [associations, setAssociations] = useState([
+  const assoc = _.get(vendor[0], "otherInfo.associationName", []);
+  console.log(assoc);
+  const [associations, setAssociations] = useState(assoc?assoc:[
     {
       association: "",
     },
   ]);
+
+  useEffect(() => {
+    setAssociations(assoc)
+  }, [vendor]);
 
   const handleFileUpload = (e, setVal, val) => {
     const filename = e.target.files[0].name;
@@ -49,7 +59,6 @@ const Company = () => {
       vendor,
       val,
       dispatch,
-      activeCompany,
       token,
       "otherInfo"
     );
@@ -82,27 +91,40 @@ const Company = () => {
     values[index][e.target.name] = e.target.value;
     setAssociations(values);
   };
-
+console.log(vendor)
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      companyDesc: "",
-      incorpCopy: "incorpName",
-      pptCopy: "pptName",
-      logoCopy: "logoName",
-      coverCopy: "coverName",
-      // associationName: "",
+      companyDesc: vendor.length ? vendor[0].otherInfo?.companyDesc : "",
+      // incorpCopy: "",
+      // pptCopy: "",
+      // logoCopy: "",
+      // coverCopy: "",
+      associationName: vendor.length ? vendor[0].otherInfo?.associationName : "",
     },
     validationSchema: Yup.object({
-      companyDesc: Yup.string().required("Required"),
-      incorpCopy: Yup.string().required("Required"),
-      pptCopy: Yup.string().required("Required"),
-      logoCopy: Yup.string().required("Required"),
-      coverCopy: Yup.string().required("Required"),
+      // companyDesc: Yup.string().required("Required"),
+      // incorpCopy: Yup.string().required("Required"),
+      // pptCopy: Yup.string().required("Required"),
+      // logoCopy: Yup.string().required("Required"),
+      // coverCopy: Yup.string().required("Required"),
       // associationName: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
+      let result = associations.map(({ association }) => association);
+      values.associationName = result;
       alert(JSON.stringify(values, null, 2));
+  
+      const reqData = {
+        otherInfo: values,
+        initRegId: user._id,
+        vendorId: vendor.length > 0 ? vendor[0]._id : "",
+        companyId: activeCompany.activeCompany._id,
+      };
+
+      dispatch(initialSave(reqData, token, HandleChange, "8"));
     },
+    
   });
 
   return (
@@ -364,8 +386,8 @@ const Company = () => {
                         key={index}
                       >
                         <TextField
-                          id="associationName"
-                          name="associationName"
+                          id="association"
+                          name="association"
                           label="Associations in which you are a member"
                           type="text"
                           value={association.association}

@@ -24,6 +24,7 @@ import _ from "lodash";
 import { useHandleChange } from "../../../Context/TabsContext";
 import { useDispatch } from "react-redux";
 import { UserContext } from "../../../Context/UserContext";
+import { uploadFileToServer } from "../../../Helpers/FileUpload";
 
 const Certification = () => {
   const classes = useStyles();
@@ -81,7 +82,14 @@ const Certification = () => {
     let newArr = [...certType]; // copying the old datas array
     newArr[index][key] = filename;
     setCertType(newArr);
-    console.log(certType[index][Object.keys(certType[index])[0]]);
+    uploadFileToServer(
+      e,
+      vendor,
+      key,
+      dispatch,
+      token,
+      "certificateInfo"
+    );
   };
 
   const formik = useFormik({
@@ -96,8 +104,8 @@ const Certification = () => {
       // tinNo: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
-      HandleChange(null,5);
-
+    //  HandleChange(null,5);
+console.log(certType)
       // alert(JSON.stringify(values, null, 2));
     },
   });

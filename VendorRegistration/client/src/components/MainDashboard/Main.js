@@ -1,27 +1,29 @@
-import React, { useState } from "react";
 import {
   AppBar,
-  IconButton,
-  Toolbar,
-  Menu,
-  Button,
   Avatar,
-  Typography,
+  Button,
+  IconButton,
+  Menu,
+  Toolbar,
+  Typography
 } from "@material-ui/core";
-import logo from "../../images/logo.png";
-import { withStyles } from "@material-ui/core/styles";
-import useStyles from "../MainNav/MainNavStyles";
+import {
+  createMuiTheme,
+  ThemeProvider,
+  withStyles
+} from "@material-ui/core/styles";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import logo from "../../images/logo.png";
+import useStyles from "../MainNav/MainNavStyles";
 import MainVendorProfile from "./MainVendorProfile";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 export default function Main() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
-
   const dispatch = useDispatch();
   const theme = createMuiTheme({
     palette: {
@@ -96,29 +98,29 @@ export default function Main() {
     <>
       <ThemeProvider theme={theme}>
         <AppBar
-          position='relative'
+          position="relative"
           elevation={0}
           className={classes.customAppBar}
         >
           <Toolbar className={classes.flexBar}>
             <div className={classes.branding} style={{ display: "block" }}>
-              <img src={logo} alt='company logo' />
+              <img src={logo} alt="company logo" />
             </div>
             <div className={classes.mainNavIcon}>
               <IconButton
-                aria-label='account of current user'
-                aria-controls='menu-appbar'
-                aria-haspopup='true'
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
                 onClick={handleMenu}
-                color='secondary'
-                edge='end'
+                color="secondary"
+                edge="end"
               >
-                <Avatar color='primary'>
+                <Avatar color="primary">
                   <Typography>MC</Typography>
                 </Avatar>
               </IconButton>
               <StyledMenu
-                id='menu-appbar'
+                id="menu-appbar"
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
@@ -133,15 +135,15 @@ export default function Main() {
               >
                 <div className={classes.popoverBtnPanel}>
                   <Button
-                    color='primary'
-                    variant='contained'
+                    color="primary"
+                    variant="contained"
                     className={`${classes.capsuleBtn} ${classes.tiny}`}
                   >
                     Change password
                   </Button>
                   <Button
-                    color='primary'
-                    variant='contained'
+                    color="primary"
+                    variant="contained"
                     className={`${classes.capsuleBtn} ${classes.tiny}`}
                     onClick={handleLogOut}
                   >
