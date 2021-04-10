@@ -8,10 +8,10 @@ import cookieParser from "cookie-parser";
 import vendor from "./routes/vendor.js";
 import register from "./routes/initialRegister.js";
 import authentication from "./routes/authentication.js";
+import application from "./routes/application.js";
 import mongoose from "mongoose";
-dotenv.config();
 import { initMongodb } from "./helper/initMongodb.js";
-
+dotenv.config();
 const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
@@ -25,6 +25,7 @@ app.use(cookieParser());
 app.use("/vendor", vendor);
 app.use("/register", register);
 app.use("/auth", authentication);
+app.use("/applications", application);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());

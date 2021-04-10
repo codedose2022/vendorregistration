@@ -47,11 +47,8 @@ export const addNewCompany = (
 
     const successStatusCd = _.get(data, "status", "");
     if (successStatusCd === responseStatusConstants.SUCCESS) {
-     
       dispatch(getUserInfo(userId, token, errCallback));
-      successCallback()
-     
-      
+      successCallback();
     } else {
       errCallback(_.get(data, "message", ""));
     }
@@ -60,7 +57,7 @@ export const addNewCompany = (
   }
 };
 
-export const initialSave = (reqData, token, HandleChange,newVal) => async (
+export const initialSave = (reqData, token, HandleChange, newVal) => async (
   dispatch
 ) => {
   try {
@@ -68,8 +65,8 @@ export const initialSave = (reqData, token, HandleChange,newVal) => async (
     const successStatusCd = _.get(data, "status", "");
     if (successStatusCd === responseStatusConstants.SUCCESS) {
       console.log("success");
-     HandleChange(null,parseInt(newVal));
-     // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
+      HandleChange(null, parseInt(newVal));
+      // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
     } else {
       console.log("no success");
       //errCallback(_.get(data, "message", ""));
@@ -84,15 +81,33 @@ export const uploadFile = (reqData, token, vendorId, fieldName) => async (
   dispatch
 ) => {
   try {
-    console.log(reqData, token, vendorId, fieldName)
-    const { data } = await api.uploadFile(reqData, token,vendorId, fieldName);
+    console.log(reqData, token, vendorId, fieldName);
+    const { data } = await api.uploadFile(reqData, token, vendorId, fieldName);
     const successStatusCd = _.get(data, "status", "");
     if (successStatusCd === responseStatusConstants.SUCCESS) {
       console.log("success");
-     // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
+      // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
     } else {
       console.log("no success");
       //errCallback(_.get(data, "message", ""));
+    }
+  } catch (error) {
+    console.log("catch");
+    //errCallback("Please try again later");
+  }
+};
+
+export const getUserApplications = (initRegId, token) => async (dispatch) => {
+  try {
+    const { data } = await api.getUserApplications(
+      { initRegId: initRegId },
+      token
+    );
+    const successStatusCd = _.get(data, "status", "");
+    if (successStatusCd === responseStatusConstants.SUCCESS) {
+      dispatch({ type: "GET_APPLICATIONS", payload: data.applications });
+    } else {
+      console.log("no success");
     }
   } catch (error) {
     console.log("catch");

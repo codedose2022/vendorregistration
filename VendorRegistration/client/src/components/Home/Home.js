@@ -8,6 +8,7 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import {
   getAllRegistrations,
   getUserInfo,
+  getUserApplications
 } from "../../Actions/vendorRegActions";
 import { isTokenValid } from "../../Api/index";
 import Alert from "@material-ui/lab/Alert";
@@ -71,8 +72,9 @@ export default function Home(props) {
           history.push("/");
         } else {
           dispatch(getAllRegistrations(user._id, token, setServiceErrors));
-
           dispatch(getUserInfo(user._id, token, setServiceErrors));
+          dispatch(getUserApplications(user._id, token));
+          
           setIsLoading(false);
         }
       } catch (error) {

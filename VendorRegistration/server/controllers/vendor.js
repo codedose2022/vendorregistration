@@ -2,6 +2,7 @@ import express from "express";
 import vendorRegistrations from "../models/vendorRegistrationSchema.js";
 import responseMessageConstants from "../constants/responseMessage.js";
 import responseStatusConstants from "../constants/responseStatusCode.js";
+import Application from "../models/applicationSchema.js";
 import _ from "lodash";
 
 const router = express.Router();
@@ -32,7 +33,6 @@ export const initialSave = async (req, res) => {
     }
     //if vendorId is present, update the document for fields as per in req
     if (vendorId !== "") {
-      
       let updates = {};
       const entries = Object.keys(reqValue);
       for (let i = 0; i < entries.length; i++) {
@@ -44,9 +44,7 @@ export const initialSave = async (req, res) => {
         },
         {
           $set: updates,
-         
-        },
-    
+        }
       );
       responseData.message = responseMessageConstants.UPDATED;
       responseData.status = responseStatusConstants.SUCCESS;
@@ -105,17 +103,30 @@ export const submit = async (req, res) => {
             status: status,
           },
         },
-        { new: true },
-        {
-          fields: {
-            ownerInfo: 1,
-          },
-        }
+        { new: true }
       )
       .then((result) => {
         responseData.vendorRegistrationsList = result;
       });
-
+    const vendorApplications = await Application.find({
+      typeId: req.body.vendorId,
+    });
+    let flag = false;
+    vendorApplications &&
+      vendorApplications.map((application) => {
+        if (application.applicationType === "VR") {
+          flag = true;
+        }
+      });
+    if (!flag) {
+      const data = {
+        applicationType: "VR",
+        userId: req.body.initRegId,
+        typeId: req.body.vendorId,
+      };
+      const application = new Application(data);
+      application.save();
+    }
     responseData.message = responseMessageConstants.SUBMITTED;
     responseData.status = responseStatusConstants.SUCCESS;
     return res.status(200).json(responseData);

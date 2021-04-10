@@ -9,4 +9,19 @@ export const getLinkStyle = (company) => {
   }
  
 };
+export const getDescOfApplication = (applicationType) => {
+  if (applicationType === 'VR') {
+    return  "Request for vendor Registration";
+  }
+ 
+}; 
+
+export const getStatusOfApplication = (id, vendors) => {
+  let vendorDetail = vendors.filter(
+    (ven) => ven._id === id
+  );
+  return vendorDetail[0].status
+ 
+};
+
 

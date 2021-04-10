@@ -18,6 +18,12 @@ const user = (state = [], action) => {
         ...state,
         userInfo : action.payload
       };
+      case "GET_APPLICATIONS":
+        return {
+          ...state,
+          applications : action.payload
+        };
+      
     default:
       return { ...state };
   }

@@ -11,6 +11,7 @@ function App() {
   const state = useSelector((state) => state);
   const loggedInStatus = _.get(state, "user.loggedInStatus", "");
   const user = _.get(state, "user.userInfo", "");
+  const application = _.get(state, "user.applications", []);
   const activeCompany = _.get(state, "activeCompany", "");
   const token = _.get(state, "user.token", "");
   const vendor = _.get(state, "vendor", "");
@@ -21,7 +22,7 @@ function App() {
         <Login />
       </Route>
       <Switch>
-        <UserContext.Provider value={{ user, activeCompany, token, vendor }}>
+        <UserContext.Provider value={{ user, activeCompany, token, vendor,application }}>
           <PrivateRoute exact path='/home' loggedInStatus={loggedInStatus}>
             <Home />
           </PrivateRoute>
