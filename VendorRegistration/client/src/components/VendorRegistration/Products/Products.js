@@ -27,26 +27,19 @@ import _ from "lodash";
 const Products = () => {
   const classes = useStyles();
   const { user, activeCompany, token, vendor } = useContext(UserContext);
-  const [addCommentModal, setAddCommentModal] = useState(false);
   const [searchResult, setSearchResult] = useState(false);
   const [value, setValue] = useState("");
   const [isEmpty, setIsEmpty] = useState(false);
   const [filteredResult, setFilteredResult] = useState([]);
+  // const [addedProduct, setAddedProduct] = useState([]);
   const product = _.get(vendor[0], "productInfo.product", []);
   const [addedProduct, setAddedProduct] = useState(product);
   useEffect(() => {
     setAddedProduct(product);
   }, [vendor]);
-
   const [productExists, setProductExists] = useState(false);
   const dispatch = useDispatch();
   const HandleChange = useHandleChange();
-  const handleClose = () => {
-    setAddCommentModal(false);
-  };
-  const handleCommentModal = () => {
-    setAddCommentModal(true);
-  };
 
   const handleSearchChange = (e) => {
     let keyWrd = e.target.value;
@@ -69,6 +62,20 @@ const Products = () => {
       setIsEmpty(false);
       setSearchResult(true);
     }
+  };
+
+  const handleSubmit = (e) => {
+    if (!addedProduct.length) {
+      alert("Please add atleast one product or service");
+    }
+    const reqData = {
+      productInfo: { product: addedProduct },
+      initRegId: user._id,
+      vendorId: vendor.length > 0 ? vendor[0]._id : "",
+      companyId: activeCompany.activeCompany._id,
+    };
+
+    dispatch(initialSave(reqData, token, HandleChange, "6"));
   };
 
   const handleAddProduct = (e, index, products) => {
@@ -96,16 +103,6 @@ const Products = () => {
     // setFilteredResult(products);
   };
 
-  const handleSubmit = () => {
-    const reqData = {
-      productInfo: { product: addedProduct },
-      initRegId: user._id,
-      vendorId: vendor.length > 0 ? vendor[0]._id : "",
-      companyId: activeCompany.activeCompany._id,
-    };
-
-    dispatch(initialSave(reqData, token, HandleChange, "6"));
-  };
   return (
     <Container className={classes.mainContainer}>
       <Grid container>
@@ -229,10 +226,9 @@ const Products = () => {
             <Grid item lg={12} xs={12}>
               <Grid item lg={12} xs={12} className={classes.saveBtn}>
                 <Button
-                  onClick={handleSubmit}
-                  type="submit"
                   variant="contained"
                   color="primary"
+                  onClick={(e) => handleSubmit(e)}
                 >
                   Save and Continue
                 </Button>
@@ -241,18 +237,6 @@ const Products = () => {
           </Paper>
         </Grid>
       </Grid>
-      <ModalPop
-        title="Add Comment"
-        isOpen={addCommentModal}
-        handleClose={handleClose}
-        content={
-          <TextField
-            multiline={true}
-            fullWidth
-            label="Comments here.."
-          ></TextField>
-        }
-      />
     </Container>
   );
 };

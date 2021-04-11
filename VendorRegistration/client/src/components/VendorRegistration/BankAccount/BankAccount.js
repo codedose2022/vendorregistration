@@ -8,10 +8,11 @@ import {
   TextField,
   Tooltip,
   Typography,
+  InputLabel,
 } from "@material-ui/core";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 import CommentIcon from "@material-ui/icons/Comment";
-import { Formik, useFormik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
@@ -100,275 +101,125 @@ const BankAccount = () => {
               onSubmit={onSubmit}
               enableReinitialize
             >
-              {(formik) => (
-                <form
+              {(formikProps) => (
+                <Form
                   className={classes.companyForm}
-                  onSubmit={formik.handleSubmit}
+                  onSubmit={formikProps.handleSubmit}
                 >
                   <Grid container>
                     <Grid item lg={6}>
                       <FormControl className={classes.formControl} fullWidth>
-                        <TextField
-                          id="bankName"
+                        <Field
                           name="bankName"
+                          as={TextField}
                           label="Bank Name"
-                          type="text"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <Tooltip title="Add comment">
-                                  <Button
-                                    onClick={handleCommentModal}
-                                    size="small"
-                                    component="label"
-                                    className={classes.btnOnInput}
-                                  >
-                                    <CommentIcon />
-                                  </Button>
-                                </Tooltip>
-                              </InputAdornment>
-                            ),
-                          }}
-                          {...formik.getFieldProps("bankName")}
                         />
-                        {formik.touched.bankName && formik.errors.bankName ? (
-                          <div className={classes.error}>
-                            {formik.errors.bankName}
-                          </div>
-                        ) : null}
-                        <div className={classes.comments}>
-                          <Typography>This is a comment</Typography>
-                        </div>
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="bankName"
+                        />
                       </FormControl>
 
                       <FormControl className={classes.formControl} fullWidth>
-                        <TextField
-                          id="branchName"
+                        <Field
                           name="branchName"
+                          as={TextField}
                           label="Branch name"
-                          type="text"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <Tooltip title="Add comment">
-                                  <Button
-                                    onClick={handleCommentModal}
-                                    size="small"
-                                    component="label"
-                                    className={classes.btnOnInput}
-                                  >
-                                    <CommentIcon />
-                                  </Button>
-                                </Tooltip>
-                              </InputAdornment>
-                            ),
-                          }}
-                          {...formik.getFieldProps("branchName")}
                         />
-                        {formik.touched.branchName &&
-                        formik.errors.branchName ? (
-                          <div className={classes.error}>
-                            {formik.errors.branchName}
-                          </div>
-                        ) : null}
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="branchName"
+                        />
                       </FormControl>
 
                       <FormControl className={classes.formControl} fullWidth>
-                        <TextField
-                          id="accNo"
+                        <Field
                           name="accNo"
+                          as={TextField}
                           label="Account number"
                           type="number"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <Tooltip title="Add comment">
-                                  <Button
-                                    onClick={handleCommentModal}
-                                    size="small"
-                                    component="label"
-                                    className={classes.btnOnInput}
-                                  >
-                                    <CommentIcon />
-                                  </Button>
-                                </Tooltip>
-                              </InputAdornment>
-                            ),
-                          }}
-                          {...formik.getFieldProps("accNo")}
                         />
-                        {formik.touched.accNo && formik.errors.accNo ? (
-                          <div className={classes.error}>
-                            {formik.errors.accNo}
-                          </div>
-                        ) : null}
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="accNo"
+                        />
                       </FormControl>
 
-                      <FormControl className={classes.formControl} fullWidth>
-                        <TextField
-                          id="ibanNo"
+                       <FormControl className={classes.formControl} fullWidth>
+                        <Field
                           name="ibanNo"
+                          as={TextField}
                           label="IBAN number"
-                          type="text"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <Tooltip title="Add comment">
-                                  <Button
-                                    onClick={handleCommentModal}
-                                    size="small"
-                                    component="label"
-                                    className={classes.btnOnInput}
-                                  >
-                                    <CommentIcon />
-                                  </Button>
-                                </Tooltip>
-                              </InputAdornment>
-                            ),
-                          }}
-                          {...formik.getFieldProps("ibanNo")}
                         />
-                        {formik.touched.ibanNo && formik.errors.ibanNo ? (
-                          <div className={classes.error}>
-                            {formik.errors.ibanNo}
-                          </div>
-                        ) : null}
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="ibanNo"
+                        />
                       </FormControl>
                     </Grid>
                     <Grid item lg={6}>
                       <FormControl className={classes.formControl} fullWidth>
-                        <TextField
-                          id="swiftCode"
+                        <Field
                           name="swiftCode"
+                          as={TextField}
                           label="Swift code"
-                          type="text"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <Tooltip title="Add comment">
-                                  <Button
-                                    onClick={handleCommentModal}
-                                    size="small"
-                                    component="label"
-                                    className={classes.btnOnInput}
-                                  >
-                                    <CommentIcon />
-                                  </Button>
-                                </Tooltip>
-                              </InputAdornment>
-                            ),
-                          }}
-                          {...formik.getFieldProps("swiftCode")}
                         />
-                        {formik.touched.swiftCode && formik.errors.swiftCode ? (
-                          <div className={classes.error}>
-                            {formik.errors.swiftCode}
-                          </div>
-                        ) : null}
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="swiftCode"
+                        />
                       </FormControl>
 
                       <FormControl className={classes.formControl} fullWidth>
-                        <TextField
-                          id="tel"
+                        <Field name="tel" as={TextField} label="Phone number" type="number"/>
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
                           name="tel"
-                          label="Phone number"
-                          type="text"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <Tooltip title="Add comment">
-                                  <Button
-                                    onClick={handleCommentModal}
-                                    size="small"
-                                    component="label"
-                                    className={classes.btnOnInput}
-                                  >
-                                    <CommentIcon />
-                                  </Button>
-                                </Tooltip>
-                              </InputAdornment>
-                            ),
-                          }}
-                          {...formik.getFieldProps("tel")}
                         />
-                        {formik.touched.tel && formik.errors.tel ? (
-                          <div className={classes.error}>
-                            {formik.errors.tel}
-                          </div>
-                        ) : null}
                       </FormControl>
 
-                      <FormControl className={classes.formControl} fullWidth>
-                        <TextField
-                          label={
-                            !isIban ? "IBAN confirmation letter" : IbanName
-                          }
-                          disabled
-                          id="ibanCopy"
+                      <FormControl
+                        className={`${classes.formControl} ${classes.customFileUpload} ${classes.shrinkLabel}`}
+                        fullWidth
+                      >
+                        <InputLabel
+                          component="legend"
+                          shrink={true}
+                          className={classes.formikShrinkLabel}
+                        >
+                          Upload IBAN confirmation letter
+                        </InputLabel>
+                        <Field
                           name="ibanCopy"
-                          InputProps={{
-                            endAdornment: (
-                              <>
-                                <InputAdornment position="end">
-                                  <Tooltip title="Add comment">
-                                    <Button
-                                      onClick={handleCommentModal}
-                                      size="small"
-                                      component="label"
-                                      className={classes.btnOnInput}
-                                    >
-                                      <CommentIcon />
-                                    </Button>
-                                  </Tooltip>
-                                </InputAdornment>
-                                <InputAdornment position="end">
-                                  <Tooltip title="Upload IBAN confirmation letter">
-                                    <Button
-                                      onClick={handleIbanName}
-                                      id="iban"
-                                      size="small"
-                                      component="label"
-                                      className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
-                                    >
-                                      <AttachFileIcon />
-                                      <input
-                                        type="file"
-                                        hidden
-                                        onChange={(e) => handleIbanUpload(e)}
-                                      />
-                                    </Button>
-                                  </Tooltip>
-                                </InputAdornment>
-                              </>
-                            ),
-                          }}
+                          as={TextField}
+                          type="file"
+                          className={classes.inputNoBorder}
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="ibanCopy"
                         />
                       </FormControl>
                     </Grid>
                     <Grid item lg={12} xs={12} className={classes.saveBtn}>
-                      <Button type="submit" variant="contained" color="primary">
+                      <Button variant="contained" color="primary">
                         Save and Continue
                       </Button>
                     </Grid>
                   </Grid>
-                </form>
+                </Form>
               )}
             </Formik>
           </Paper>
         </Grid>
       </Grid>
-      <ModalPop
-        title="Add Comment"
-        isOpen={addCommentModal}
-        handleClose={handleClose}
-        content={
-          <TextField
-            multiline={true}
-            fullWidth
-            label="Comments here.."
-          ></TextField>
-        }
-      />
     </Container>
   );
 };

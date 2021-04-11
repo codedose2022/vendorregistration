@@ -5,7 +5,7 @@ import _ from "lodash";
 import HorizontalTabs from "../Tabs/HorizontalTabs";
 import Profile from "./Profile/Profile";
 import Company from "../VendorRegistration/Company/Company";
-import Owner from "../VendorRegistration/Owner/Owner";
+import Owners from "../VendorRegistration/Owner/Owners";
 import Tax from "../VendorRegistration/Tax/Tax";
 import Contact from "../VendorRegistration/Contact/Contact";
 import Other from "../VendorRegistration/Other/Others";
@@ -15,7 +15,7 @@ import Products from "../VendorRegistration/Products/Products";
 import Certification from "../VendorRegistration/Certification/Certification";
 import Applications from "./Applications/Applications";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   const state = useSelector((state) => state);
   const classes = useStyles();
   const activeMainTabs = _.get(state, "ChangeTabs.activeTab", "Dashboard");
@@ -45,7 +45,7 @@ const Dashboard = () => {
             <TabPanel value={0} index={0} content={<Company />} />
           )}
           {activeTabs === 1 && (
-            <TabPanel value={1} index={1} content={<Owner />} />
+            <TabPanel value={1} index={1} content={<Owners />} />
           )}
           {activeTabs === 2 && (
             <TabPanel value={2} index={2} content={<Tax />} />

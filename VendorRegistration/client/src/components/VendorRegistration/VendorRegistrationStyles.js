@@ -45,20 +45,20 @@ export default makeStyles((theme) => ({
   },
   btnOnInput: {
     minWidth: "1rem",
-    width: "1.25rem",
-    height: "1.25rem",
+    width: "1.75rem",
+    height: "1.75rem",
     borderRadius: "100%",
     color: theme.palette.secondary.main,
     "& svg": {
-      width: "1rem",
-      height: "1rem",
+      width: "1.5rem",
+      height: "1.5rem",
     },
   },
   companyForm: {
     margin: theme.spacing(1),
   },
   error: {
-    fontSize: "10px",
+    fontSize: "12px",
     color: "#ea1000",
   },
   flex: {
@@ -210,5 +210,39 @@ export default makeStyles((theme) => ({
   },
   padAdded:{
     padding: '1rem',
+  },
+  formikSelectLabel:{
+    [theme.breakpoints.up("md")]: {      
+    margin: '0 1rem',
+    },
+    [theme.breakpoints.down("md")]: {
+      margin: '0 .25rem',
+    },
+    paddingTop: '.25rem'
+  },
+  shrinkLabel:{
+    marginTop: '1rem',
+  },
+  formikShrinkLabel:{
+    [theme.breakpoints.up("md")]: {      
+      margin: '-.75rem 1rem',
+      },
+      [theme.breakpoints.down("md")]: {
+        margin: '-.35rem .25rem',
+      },
+  },
+  inputNoBorder:{
+    '& :before':{
+      borderBottom: 0,
+    },
+    '& :after':{
+      borderBottom: 0,
+    },
+    '& .MuiInput-underline:hover:before':{
+      borderBottom: 0,
+    }
+  },
+  customFileUpload:{
+    marginTop: '1.75rem'
   }
 }));

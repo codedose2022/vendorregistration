@@ -1,0 +1,25 @@
+const Certifications = [
+    "Do you have Quality Policy Statement?",
+    "Please attach evidence of Quality Policy statement.",
+    "Do you have valid ISO 9001 certification (or equivalent)?",
+    "Do you have a QMS manual?",
+    "Do you have organization chart reflecting Quality functions & Positions?",
+    "Do you have list of ISO mandatory procedures relevant to the applied activities?",
+    "Do you comply with the current legal requirements?",
+    "Do you ensure to use checked/calibrated testing equipment only?",
+    "Do you have Antibribery and corruption policies standards?",
+    "Do you have a Code of Conduct for your company in place?",
+    "Do you have approved Cyber Security Policy?",
+    "Do you routinely use non-disclosure agreements (NDA's) to protect third party intellectual property rights?",
+    "Do you have HSE policy?",
+    "Do you have HSE Manual?",
+    "Do you have HSE Organization Chart?",
+    "Does your company follow applicable health safety, environmental laws, and regulations?",
+    "Do you have certificates for ISO 14001/ISO 45001 or equivalent as applicable?",
+    "Do you have a written emergency response plan and fire evacuation procedure?",
+    "Do you have HSE statistics & Records of Incidents (Including Investigation reports of past 3 years)?",
+    "Do you have Risk Register (Aspect Impact Assessment Records focusing on Occupational Health, Safety and Environmental Aspect)?",
+    "Do you have list of Safe Operating procedures?",
+]
+
+export default Certifications;

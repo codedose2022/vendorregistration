@@ -4,7 +4,6 @@ import {
   TextField,
   Typography,
   FormControl,
-  FormControlLabel,
   Checkbox,
   FormLabel,
   FormGroup,
@@ -12,17 +11,19 @@ import {
   InputAdornment,
   Tooltip,
   Paper,
+  InputLabel,
+  MenuItem,
 } from "@material-ui/core";
 import React, { useState, useContext } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import VendorType from "../../../Constants/VendorType";
-import AttachFileIcon from "@material-ui/icons/AttachFile";
 import AddIcon from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
-import CommentIcon from "@material-ui/icons/Comment";
-import { useFormik } from "formik";
+import { ErrorMessage, Field, Form, Formik, FieldArray } from "formik";
+import { Select } from "formik-material-ui";
 import * as Yup from "yup";
-import ModalPop from "../../Modal/ModalPop";
+
+import countries from "../../../Constants/Countries";
 import { useDispatch } from "react-redux";
 import { useHandleChange } from "../../../Context/TabsContext";
 import { uploadFile } from "../../../Actions/vendorRegActions";
@@ -32,111 +33,15 @@ import { uploadFileToServer } from "../../../Helpers/FileUpload";
 
 const Company = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+const dispatch = useDispatch();
   const HandleChange = useHandleChange();
   const { user, activeCompany, token, vendor } = useContext(UserContext);
-  const [vendorType, setVendorType] = useState("");
-  const [isLicense, setIsLicense] = useState(false);
-  const [isOrgChart, setOrgChart] = useState(false);
-  const [licenseName, setLicenseName] = useState("");
-  const [orgChartName, setOrgChartName] = useState("");
-  const [addCommentModal, setAddCommentModal] = useState(false);
-  const [sisterCompanies, setSisterCompanies] = useState([
-    {
-      sisterCompany: "",
-    },
-  ]);
-  console.log(vendor);
-  const handleChange = (event) => {
-    setVendorType(event.target.checked);
-  };
-
-  const handleFileUpload = (e, setVal, val) => {
-    const filename = e.target.files[0].name;
-    setVal(filename);
-    uploadFileToServer(e, vendor, val, dispatch, token, "companyInfo");
-  };
-
-  const handleFileState = (setFile) => {
-    setFile(true);
-  };
-
-  const handleCommentModal = () => {
-    setAddCommentModal(true);
-  };
-
-  const handleClose = () => {
-    setAddCommentModal(false);
-  };
-
-  const handleAddSisCompany = (index) => {
-    setSisterCompanies([...sisterCompanies, { sisterCompany: "" }]);
-  };
-  const handleRemoveSisCompany = (index) => {
-    const values = [...sisterCompanies];
-    values.splice(index, 1);
-    setSisterCompanies(values);
-  };
-
-  const handleChangeInput = (index, e) => {
-    const values = [...sisterCompanies];
-    values[index][e.target.name] = e.target.value;
-    setSisterCompanies(values);
-  };
-
-  const formik = useFormik({
-    initialValues: {
-      companyName: vendor.length ? vendor[0].companyInfo?.companyName : "",
-      address1: vendor.length ? vendor[0].companyInfo?.address1 : "",
-      address2: "",
-      city: "",
-      emirates: "",
-      country: "",
-      poBox: "",
-      email: "",
-      website: "",
-      phoneNo: "",
-      faxNo: "",
-      noOfEmp: "",
-      vendorType: "",
-      yearOfEst: "",
-      licenseNo: "",
-      licenseExpDate: "",
-      sisCompanies: "",
-    },
-    validationSchema: Yup.object({
-      //   companyName: Yup.string().required("Required"),
-      //   address1: Yup.string().required("Required"),
-      //   address2: Yup.string().required("Required"),
-      //   city: Yup.string().required("Required"),
-      //   emirates: Yup.string().required("Required"),
-      //   country: Yup.string().required("Required"),
-      //   poBox: Yup.string().required("Required"),
-      //   email: Yup.string().email("Invalid email address").required("Required"),
-      //   website: Yup.string().required("Required"),
-      //   phoneNo: Yup.string().required("Required"),
-      //   faxNo: Yup.string().required("Required"),
-      //   noOfEmp: Yup.string().required("Required"),
-      //   vendorType: Yup.string().required("Required"),
-      //   yearOfEst: Yup.string().required("Required"),
-      //   licenseNo: Yup.string().required("Required"),
-      //   licenseExpDate: Yup.string().required("Required"),
-      //  licenseCopy: Yup.string().required("Required"),
-      //  orgStructure: Yup.string().required("Required"),
-      //  sisCompanies: Yup.string().required("Required"),
-    }),
-    onSubmit: (values) => {
-      values.sisCompanies = sisterCompanies;
-      const reqData = {
-        companyInfo: values,
-        initRegId: user._id,
-        vendorId: vendor.length > 0 ? vendor[0]._id : "",
-        companyId: activeCompany.activeCompany._id,
-      };
-
-      dispatch(initialSave(reqData, token, HandleChange, "1"));
-    },
-  });
+  
+ //const handleFileUpload = (e, setVal, val) => {
+   // const filename = e.target.files[0].name;
+   // setVal(filename);
+   // uploadFileToServer(e, vendor, val, dispatch, token, "companyInfo");
+  //};
   return (
     <Container className={classes.mainContainer}>
       <Grid container>
@@ -147,737 +52,434 @@ const Company = () => {
         </Grid>
         <Grid item lg={12}>
           <Paper elevation={2} square={true} className={classes.customPaper}>
-            <form
-              className={classes.companyForm}
-              onSubmit={formik.handleSubmit}
+            <Formik
+              initialValues={{
+                companyName: "",
+                address1: "",
+                address2: "",
+                city: "",
+                emirates: "",
+                country: "",
+                poBox: "",
+                email: "",
+                website: "",
+                phoneNo: "",
+                faxNo: "",
+                noOfEmp: "",
+                vendorType: "",
+                yearOfEst: "",
+                licenseNo: "",
+                licenseExpDate: "",
+                licenseCopy: "",
+                orgStructure: "",
+                sisCompanies: [""],
+              }}
+              validationSchema={Yup.object({
+                companyName: Yup.string().required("Required"),
+                address1: Yup.string().required("Required"),
+                address2: Yup.string().required("Required"),
+                city: Yup.string().required("Required"),
+                emirates: Yup.string().required("Required"),
+                country: Yup.string().required("Required"),
+                poBox: Yup.string().required("Required"),
+                email: Yup.string()
+                  .email("Invalid email address")
+                  .required("Required"),
+                website: Yup.string().required("Required"),
+                phoneNo: Yup.string().required("Required"),
+                faxNo: Yup.string().required("Required"),
+                noOfEmp: Yup.string().required("Required"),
+                vendorType: Yup.string().required("Required"),
+                yearOfEst: Yup.string().required("Required"),
+                licenseNo: Yup.string().required("Required"),
+                licenseExpDate: Yup.string().required("Required"),
+                licenseCopy: Yup.string().required("Required"),
+                orgStructure: Yup.string().required("Required"),
+                sisCompanies: Yup.string().required("Required"),
+            })}
+  //             onSubmit= (values) => {
+  //     values.sisCompanies = sisterCompanies;
+  //     const reqData = {
+  //       companyInfo: values,
+  //       initRegId: user._id,
+  //       vendorId: vendor.length > 0 ? vendor[0]._id : "",
+  //       companyId: activeCompany.activeCompany._id,
+  //     };
+
+  //     dispatch(initialSave(reqData, token, HandleChange, "1"));
+  //   },
+  // });
             >
-              <Grid container>
-                <Grid item lg={6}>
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="companyName"
-                      name="companyName"
-                      label="Company name"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("companyName")}
-                    />
-                    {formik.touched.companyName && formik.errors.companyName ? (
-                      <div className={classes.error}>
-                        {formik.errors.companyName}
-                      </div>
-                    ) : null}
-                    <div className={classes.comments}>
-                      <Typography>This is a comment</Typography>
-                    </div>
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="address1"
-                      name="address1"
-                      label="Address Line 1"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("address1")}
-                    />
-                    {formik.touched.address1 && formik.errors.address1 ? (
-                      <div className={classes.error}>
-                        {formik.errors.address1}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="address2"
-                      name="address2"
-                      label="Address Line 2"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("address2")}
-                    />
-                    {formik.touched.address2 && formik.errors.address2 ? (
-                      <div className={classes.error}>
-                        {formik.errors.address2}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="city"
-                      name="city"
-                      label="City"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("city")}
-                    />
-                    {formik.touched.city && formik.errors.city ? (
-                      <div className={classes.error}>{formik.errors.city}</div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="emirates"
-                      name="emirates"
-                      label="State/Province/Emirates"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("emirates")}
-                    />
-                    {formik.touched.emirates && formik.errors.emirates ? (
-                      <div className={classes.error}>
-                        {formik.errors.emirates}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="country"
-                      name="country"
-                      label="Country"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("country")}
-                    />
-                    {formik.touched.country && formik.errors.country ? (
-                      <div className={classes.error}>
-                        {formik.errors.country}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="poBox"
-                      name="poBox"
-                      label="P.O Box"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("poBox")}
-                    />
-                    {formik.touched.poBox && formik.errors.poBox ? (
-                      <div className={classes.error}>{formik.errors.poBox}</div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="email"
-                      name="email"
-                      label="Email"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("email")}
-                    />
-                    {formik.touched.email && formik.errors.email ? (
-                      <div className={classes.error}>{formik.errors.email}</div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="website"
-                      name="website"
-                      label="Website"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("website")}
-                    />
-                    {formik.touched.website && formik.errors.website ? (
-                      <div className={classes.error}>
-                        {formik.errors.website}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="phoneNo"
-                      name="phoneNo"
-                      label="Phone Number"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("phoneNo")}
-                    />
-                    {formik.touched.phoneNo && formik.errors.phoneNo ? (
-                      <div className={classes.error}>
-                        {formik.errors.phoneNo}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="faxNo"
-                      name="faxNo"
-                      label="Fax Number"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("faxNo")}
-                    />
-                    {formik.touched.faxNo && formik.errors.faxNo ? (
-                      <div className={classes.error}>{formik.errors.faxNo}</div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="mobileNo"
-                      name="mobileNo"
-                      label="Mobile"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("mobileNo")}
-                    />
-                    {formik.touched.mobileNo && formik.errors.mobileNo ? (
-                      <div className={classes.error}>
-                        {formik.errors.mobileNo}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="noOfEmp"
-                      name="noOfEmp"
-                      label="No. of employees"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("noOfEmp")}
-                    />
-                    {formik.touched.noOfEmp && formik.errors.noOfEmp ? (
-                      <div className={classes.error}>
-                        {formik.errors.noOfEmp}
-                      </div>
-                    ) : null}
-                  </FormControl>
-                </Grid>
-                <Grid item lg={6}>
-                  <FormControl
-                    component="fieldset"
-                    className={classes.formControl}
-                    fullWidth
-                    style={{ marginTop: ".75rem" }}
-                  >
-                    <div className={classes.flex}>
-                      <FormLabel component="legend">Vendor type</FormLabel>
-                      <Tooltip title="Add comment">
-                        <Button
-                          onClick={handleCommentModal}
-                          size="small"
-                          component="label"
-                          className={classes.btnOnInput}
-                        >
-                          <CommentIcon />
-                        </Button>
-                      </Tooltip>
-                    </div>
-                    <FormGroup>
-                      {VendorType.map((type) => (
-                        <FormControlLabel
-                          key={type}
-                          name="vendorType"
-                          id="vendorType"
-                          control={
-                            <Checkbox
-                              onClick={handleChange}
-                              color="primary"
-                              name={type}
-                              value={vendorType}
-                              className={classes.customCheck}
-                            />
-                          }
-                          label={type}
+              {(formikProps) => (
+                <Form
+                  className={classes.companyForm}
+                  onSubmit={formikProps.handleSubmit}
+                >
+                  <Grid container>
+                    <Grid item lg={6}>
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field
+                          name="companyName"
+                          as={TextField}
+                          label="Company name"
                         />
-                      ))}
-                    </FormGroup>
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="yearOfEst"
-                      name="yearOfEst"
-                      label="Year of establishment"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("yearOfEst")}
-                    />
-                    {formik.touched.yearOfEst && formik.errors.yearOfEst ? (
-                      <div className={classes.error}>
-                        {formik.errors.yearOfEst}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="licenseNo"
-                      name="licenseNo"
-                      label="License number"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("licenseNo")}
-                    />
-                    {formik.touched.licenseNo && formik.errors.licenseNo ? (
-                      <div className={classes.error}>
-                        {formik.errors.licenseNo}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      id="licenseExpDate"
-                      name="licenseExpDate"
-                      label="License expiry date"
-                      type="text"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip title="Add comment">
-                              <Button
-                                onClick={handleCommentModal}
-                                size="small"
-                                component="label"
-                                className={classes.btnOnInput}
-                              >
-                                <CommentIcon />
-                              </Button>
-                            </Tooltip>
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("licenseExpDate")}
-                    />
-                    {formik.touched.licenseExpDate &&
-                    formik.errors.licenseExpDate ? (
-                      <div className={classes.error}>
-                        {formik.errors.licenseExpDate}
-                      </div>
-                    ) : null}
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      label={!isLicense ? "License copy" : licenseName}
-                      disabled
-                      id="licenseCopy"
-                      name="licenseCopy"
-                      InputProps={{
-                        endAdornment: (
-                          <>
-                            <InputAdornment position="end">
-                              <Tooltip title="Add comment">
-                                <Button
-                                  onClick={handleCommentModal}
-                                  size="small"
-                                  component="label"
-                                  className={classes.btnOnInput}
-                                >
-                                  <CommentIcon />
-                                </Button>
-                              </Tooltip>
-                            </InputAdornment>
-                            <InputAdornment position="end">
-                              <Tooltip title="Upload License">
-                                <Button
-                                  onClick={(e) => handleFileState(setIsLicense)}
-                                  id="license"
-                                  size="small"
-                                  component="label"
-                                  className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
-                                >
-                                  <AttachFileIcon />
-                                  <input
-                                    type="file"
-                                    hidden
-                                    onChange={(e) =>
-                                      handleFileUpload(
-                                        e,
-                                        setLicenseName,
-                                        "licenseCopy"
-                                      )
-                                    }
-                                  />
-                                </Button>
-                              </Tooltip>
-                            </InputAdornment>
-                          </>
-                        ),
-                      }}
-                    />
-                  </FormControl>
-
-                  <FormControl className={classes.formControl} fullWidth>
-                    <TextField
-                      label={!isOrgChart ? "Organization chart" : orgChartName}
-                      disabled
-                      id="orgStructure"
-                      name="orgStructure"
-                      InputProps={{
-                        endAdornment: (
-                          <>
-                            <InputAdornment position="end">
-                              <Tooltip title="Add comment">
-                                <Button
-                                  onClick={handleCommentModal}
-                                  size="small"
-                                  component="label"
-                                  className={classes.btnOnInput}
-                                >
-                                  <CommentIcon />
-                                </Button>
-                              </Tooltip>
-                            </InputAdornment>
-                            <InputAdornment position="end">
-                              <Tooltip title="Upload organization chart">
-                                <Button
-                                  onClick={(e) => handleFileState(setOrgChart)}
-                                  id="orgChart"
-                                  size="small"
-                                  component="label"
-                                  className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
-                                >
-                                  <AttachFileIcon />
-                                  <input
-                                    type="file"
-                                    hidden
-                                    onChange={(e) =>
-                                      handleFileUpload(
-                                        e,
-                                        setOrgChartName,
-                                        "orgStructure"
-                                      )
-                                    }
-                                  />
-                                </Button>
-                              </Tooltip>
-                            </InputAdornment>
-                          </>
-                        ),
-                      }}
-                    />
-                  </FormControl>
-                  {sisterCompanies.map((siscompany, index) => {
-                    return (
-                      <FormControl
-                        className={classes.formControl}
-                        fullWidth
-                        key={index}
-                      >
-                        <TextField
-                          id="sisterCompany"
-                          name="sisterCompany"
-                          label="Sister companies / Subsidiaries"
-                          type="text"
-                          value={siscompany.sisterCompany}
-                          onChange={(e) => handleChangeInput(index, e)}
-                          InputProps={{
-                            endAdornment: (
-                              <>
-                                <InputAdornment position="end">
-                                  <Tooltip title="Add comment">
-                                    <Button
-                                      onClick={handleCommentModal}
-                                      size="small"
-                                      component="label"
-                                      className={classes.btnOnInput}
-                                    >
-                                      <CommentIcon />
-                                    </Button>
-                                  </Tooltip>
-                                </InputAdornment>
-                                <InputAdornment position="end">
-                                  {index === 0 && (
-                                    <Tooltip title="Add new subsidiary">
-                                      <Button
-                                        onClick={() =>
-                                          handleAddSisCompany(index)
-                                        }
-                                        id="orgChart"
-                                        size="small"
-                                        component="label"
-                                        className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
-                                      >
-                                        <AddIcon />
-                                      </Button>
-                                    </Tooltip>
-                                  )}
-                                  {index > 0 && (
-                                    <Tooltip title="Remove subsidiary">
-                                      <Button
-                                        onClick={() =>
-                                          handleRemoveSisCompany(index)
-                                        }
-                                        id="orgChart"
-                                        size="small"
-                                        component="label"
-                                        className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
-                                      >
-                                        <Close />
-                                      </Button>
-                                    </Tooltip>
-                                  )}
-                                </InputAdornment>
-                              </>
-                            ),
-                          }}
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="companyName"
+                        />
+                        <div className={classes.comments}>
+                          <Typography>This is a comment</Typography>
+                        </div>
+                      </FormControl>
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field
+                          name="address1"
+                          as={TextField}
+                          label="Address line 1"
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="address1"
                         />
                       </FormControl>
-                    );
-                  })}
-                </Grid>
-                <Grid item lg={12} className={classes.saveBtn}>
-                  <Button type="submit" variant="contained" color="primary">
-                    Save and Continue
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field
+                          name="address2"
+                          as={TextField}
+                          label="Address line 2"
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="address2"
+                        />
+                      </FormControl>
+                      <FormControl className={classes.formControl} fullWidth>
+                        <InputLabel className={classes.formikSelectLabel}>
+                          Country
+                        </InputLabel>
+                        <Field name="country" component={Select}>
+                          {countries.map((country) => (
+                            <MenuItem
+                              value={country.countryName}
+                              key={country.countryShortCode}
+                            >
+                              {country.countryName}
+                            </MenuItem>
+                          ))}
+                        </Field>
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="country"
+                        />
+                      </FormControl>
+                      <FormControl className={classes.formControl} fullWidth>
+                        <InputLabel className={classes.formikSelectLabel}>
+                          State/Province/Emirates
+                        </InputLabel>
+                        <Field name="emirates" component={Select}>
+                          {formikProps.values.country
+                            ? countries
+                                .find(
+                                  ({ countryName }) =>
+                                    countryName === formikProps.values.country
+                                )
+                                .regions.map((reg) => (
+                                  <MenuItem
+                                    value={reg.name}
+                                    key={reg.shortCode}
+                                  >
+                                    {reg.name}
+                                  </MenuItem>
+                                ))
+                            : []}
+                        </Field>
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="emirates"
+                        />
+                      </FormControl>
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field name="city" as={TextField} label="City" />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="city"
+                        />
+                      </FormControl>
+
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field name="poBox" as={TextField} label="P.O.Box" />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="poBox"
+                        />
+                      </FormControl>
+
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field name="email" as={TextField} label="Email" />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="email"
+                        />
+                      </FormControl>
+
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field name="website" as={TextField} label="Website" />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="website"
+                        />
+                      </FormControl>
+
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field
+                          name="phoneNo"
+                          as={TextField}
+                          label="Phone number"
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="phoneNo"
+                        />
+                      </FormControl>
+
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field name="faxNo" as={TextField} label="Fax" />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="faxNo"
+                        />
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item lg={6}>
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field
+                          name="noOfEmp"
+                          as={TextField}
+                          label="No. of employees"
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="noOfEmp"
+                        />
+                      </FormControl>
+                      <FormControl
+                        component="fieldset"
+                        className={classes.formControl}
+                        style={{ marginTop: ".75rem" }}
+                      >
+                        <FormLabel component="legend">Vendor type</FormLabel>
+                        <FormGroup>
+                          {VendorType.map((type) => (
+                            <FormLabel key={type}>
+                              <Field
+                                name="vendorType"
+                                as={Checkbox}
+                                label={type}
+                                color="primary"
+                              ></Field>
+                              {type}
+                            </FormLabel>
+                          ))}
+                        </FormGroup>
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="vendorType"
+                        />
+                      </FormControl>
+
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field
+                          name="yearOfEst"
+                          as={TextField}
+                          label="Year of establishment"
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="yearOfEst"
+                        />
+                      </FormControl>
+
+                      <FormControl className={classes.formControl} fullWidth>
+                        <Field
+                          name="licenseNo"
+                          as={TextField}
+                          label="License number"
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="licenseNo"
+                        />
+                      </FormControl>
+
+                      <FormControl
+                        className={`${classes.formControl} ${classes.shrinkLabel} ${classes.customFileUpload}`}
+                        fullWidth
+                      >
+                        <InputLabel
+                          component="legend"
+                          shrink={true}
+                          className={classes.formikShrinkLabel}
+                        >
+                          License expiry date
+                        </InputLabel>
+                        <Field
+                          name="licenseExpDate"
+                          as={TextField}
+                          type="date"
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="licenseExpDate"
+                        />
+                      </FormControl>
+
+                      <FormControl
+                        className={`${classes.formControl} ${classes.customFileUpload} ${classes.shrinkLabel}`}
+                        fullWidth
+                      >
+                        <InputLabel
+                          component="legend"
+                          shrink={true}
+                          className={classes.formikShrinkLabel}
+                        >
+                          Upload license copy
+                        </InputLabel>
+                        <Field
+                          name="licenseCopy"
+                          as={TextField}
+                          type="file"
+                          className={classes.inputNoBorder}
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="licenseCopy"
+                        />
+                      </FormControl>
+
+                      <FormControl
+                        className={`${classes.formControl} ${classes.customFileUpload} ${classes.shrinkLabel} ${classes.inputNoBorder}`}
+                        fullWidth
+                      >
+                        <InputLabel
+                          component="legend"
+                          shrink={true}
+                          className={classes.formikShrinkLabel}
+                        >
+                          Upload organization chart
+                        </InputLabel>
+                        <Field
+                          name="orgStructure"
+                          type="file"
+                          as={TextField}
+                          className={classes.inputNoBorder}
+                        />
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="orgStructure"
+                        />
+                      </FormControl>
+
+                      
+                      <FormControl className={classes.formControl} fullWidth>
+                        <FieldArray
+                          name="sisCompanies"
+                          render={(arrayHelpers) => (
+                            <div>
+                              {formikProps.values.sisCompanies.map(
+                                (sisCompany, index) => (
+                                  <div key={index}>
+                                    <Field
+                                      name={`sisCompanies.${index}`}
+                                      label="Sister company"
+                                      as={TextField}
+                                      fullWidth
+                                      InputProps={{
+                                        endAdornment: (
+                                          <>
+                                            <InputAdornment position="end">
+                                              {index === 0 && (
+                                                <Tooltip title="Add new subsidiary">
+                                                  <Button
+                                                    onClick={() =>
+                                                      arrayHelpers.push("")
+                                                    }
+                                                    id="addsubsidary"
+                                                    size="small"
+                                                    component="label"
+                                                    className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
+                                                  >
+                                                    <AddIcon />
+                                                  </Button>
+                                                </Tooltip>
+                                              )}
+                                              {index > 0 && (
+                                                <Tooltip title="Remove subsidiary">
+                                                  <Button
+                                                    onClick={() =>
+                                                      arrayHelpers.remove(index)
+                                                    }
+                                                    id="addsubsidary"
+                                                    size="small"
+                                                    component="label"
+                                                    className={`${classes.fileUploadBtn} ${classes.btnOnInput}`}
+                                                  >
+                                                    <Close />
+                                                  </Button>
+                                                </Tooltip>
+                                              )}
+                                            </InputAdornment>
+                                          </>
+                                        ),
+                                      }}
+                                    />
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          )}
+                        />
+
+                        <ErrorMessage
+                          className={classes.error}
+                          component="div"
+                          name="sisterCompany"
+                        />
+                      </FormControl>
+                      {/* );
+                      })} */}
+                    </Grid>
+
+                    <Grid item lg={12} className={classes.saveBtn}>
+                      <Button variant="contained" color="primary">
+                        Save and Continue
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Form>
+              )}
+            </Formik>
           </Paper>
         </Grid>
       </Grid>
-      <ModalPop
-        title="Add Comment"
-        isOpen={addCommentModal}
-        handleClose={handleClose}
-        content={
-          <TextField
-            multiline={true}
-            fullWidth
-            label="Comments here.."
-          ></TextField>
-        }
-      />
     </Container>
   );
 };
