@@ -19,7 +19,7 @@ const contactInfoSchema = mongoose.Schema(
     email: [String],
     altEmail: [String],
   },
-  { minimize: false },
+  // { minimize: false },
   { timestamps: true }
 );
 

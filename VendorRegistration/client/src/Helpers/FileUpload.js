@@ -1,5 +1,5 @@
 import { uploadFile } from "../Actions/vendorRegActions";
-
+import _ from 'lodash';
 export const uploadFileToServer = (
   e,
   vendor,
@@ -13,4 +13,16 @@ export const uploadFileToServer = (
   formData.append("file", e.target.files[0]);
   formData.append("sectionName", sectionName);
   dispatch(uploadFile(formData, token, vendorId, val));
+};
+
+export const addFileName = (data, fieldName) => {
+  let pattern = /\.[0-9a-z]+$/i;
+  if (data[fieldName] && data[fieldName].includes("\\")) {
+      _.set(
+        data,
+        fieldName,
+        fieldName + data[fieldName].match(pattern)[0]
+      );
+    }
+    return data;
 };

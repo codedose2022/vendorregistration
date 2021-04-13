@@ -57,13 +57,20 @@ const BankAccount = () => {
   };
 
   const initialValues = {
-    bankName: vendor.length ? vendor[0].bankInfo?.bankName : "",
-    branchName: vendor.length ? vendor[0].bankInfo?.branchName : "",
-    accNo: vendor.length ? vendor[0].bankInfo?.accNo : "",
-    ibanNo: vendor.length ? vendor[0].bankInfo?.ibanNo : "",
-    swiftCode: vendor.length ? vendor[0].bankInfo?.swiftCode : "",
-    tel: vendor.length ? vendor[0].bankInfo?.tel : "",
-    ibanCopy: vendor.length ? vendor[0].bankInfo?.ibanCopy : "",
+    // bankName: vendor.length ? vendor[0].bankInfo?.bankName : "",
+    // branchName: vendor.length ? vendor[0].bankInfo?.branchName : "",
+    // accNo: vendor.length ? vendor[0].bankInfo?.accNo : "",
+    // ibanNo: vendor.length ? vendor[0].bankInfo?.ibanNo : "",
+    // swiftCode: vendor.length ? vendor[0].bankInfo?.swiftCode : "",
+    // tel: vendor.length ? vendor[0].bankInfo?.tel : "",
+    // ibanCopy: vendor.length ? vendor[0].bankInfo?.ibanCopy : "",
+    bankName: "",
+    branchName: "",
+    accNo: "",
+    ibanNo:  "",
+    swiftCode:  "",
+    tel:  "",
+    ibanCopy: "",
   };
   const validationSchema = Yup.object({
     bankName: Yup.string().required("Required"),

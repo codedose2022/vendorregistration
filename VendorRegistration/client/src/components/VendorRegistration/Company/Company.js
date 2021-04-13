@@ -1,47 +1,147 @@
 import {
-  Container,
-  Grid,
-  TextField,
-  Typography,
-  FormControl,
-  Checkbox,
-  FormLabel,
-  FormGroup,
   Button,
+  Checkbox,
+  Container,
+  FormControl,
+  FormGroup,
+  FormLabel,
+  Grid,
   InputAdornment,
-  Tooltip,
-  Paper,
   InputLabel,
   MenuItem,
+  Paper,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@material-ui/core";
-import React, { useState, useContext } from "react";
-import useStyles from "../VendorRegistrationStyles";
-import VendorType from "../../../Constants/VendorType";
 import AddIcon from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
-import { ErrorMessage, Field, Form, Formik, FieldArray } from "formik";
+import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import { Select } from "formik-material-ui";
-import * as Yup from "yup";
-
-import countries from "../../../Constants/Countries";
+import _ from "lodash";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
-import { useHandleChange } from "../../../Context/TabsContext";
-import { uploadFile } from "../../../Actions/vendorRegActions";
+import * as Yup from "yup";
 import { initialSave } from "../../../Actions/vendorRegActions";
+import countries from "../../../Constants/Countries";
+import VendorType from "../../../Constants/VendorType";
+import { useHandleChange } from "../../../Context/TabsContext";
 import { UserContext } from "../../../Context/UserContext";
 import { uploadFileToServer } from "../../../Helpers/FileUpload";
-
+import useStyles from "../VendorRegistrationStyles";
+import moment from "moment";
+import { addStatus } from "../../../Helpers/validationHelper";
+import { addFileName } from "../../../Helpers/FileUpload";
 const Company = () => {
   const classes = useStyles();
-const dispatch = useDispatch();
-  const HandleChange = useHandleChange();
+  const dispatch = useDispatch();
+  const change = useHandleChange();
   const { user, activeCompany, token, vendor } = useContext(UserContext);
-  
- //const handleFileUpload = (e, setVal, val) => {
-   // const filename = e.target.files[0].name;
-   // setVal(filename);
-   // uploadFileToServer(e, vendor, val, dispatch, token, "companyInfo");
-  //};
+  const initialValues = {
+    companyName: vendor.length ? vendor[0].companyInfo?.companyName[0] : "",
+    address1: vendor.length ? vendor[0].companyInfo?.address1[0] : "",
+    address2: vendor.length ? vendor[0].companyInfo?.address2[0] : "",
+    city: vendor.length ? vendor[0].companyInfo?.city[0] : "",
+    emirates: vendor.length ? vendor[0].companyInfo?.emirates[0] : "",
+    country: vendor.length ? vendor[0].companyInfo?.country[0] : "",
+    poBox: vendor.length ? vendor[0].companyInfo?.poBox[0] : "",
+    email: vendor.length ? vendor[0].companyInfo?.email[0] : "",
+    website: vendor.length ? vendor[0].companyInfo?.website[0] : "",
+    phoneNo: vendor.length ? vendor[0].companyInfo?.phoneNo[0] : "",
+    faxNo: vendor.length ? vendor[0].companyInfo?.faxNo[0] : "",
+    noOfEmp: vendor.length ? vendor[0].companyInfo?.noOfEmp[0] : "",
+    vendorType: vendor.length ? vendor[0].companyInfo?.vendorType[0] : [],
+    yearOfEst: vendor.length ? vendor[0].companyInfo?.yearOfEst[0] : "",
+    licenseNo: vendor.length ? vendor[0].companyInfo?.licenseNo[0] : "",
+    licenseExpDate: vendor.length
+      ? moment(vendor[0].companyInfo?.licenseExpDate[0])
+          .format("YYYY-MM-DD")
+          .toString()
+      : "",
+    // licenseCopy: vendor.length ? vendor[0].companyInfo?.licenseCopy[0] : "",
+    // orgStructure: vendor.length ? vendor[0].companyInfo?.orgStructure[0] : "",
+
+    sisCompanies:
+      vendor.length &&
+      vendor[0].companyInfo &&
+      _.get(vendor[0].companyInfo, "sisCompanies", false) &&
+      vendor[0].companyInfo.sisCompanies.length
+        ? vendor[0].companyInfo.sisCompanies[0]
+        : [""],
+  };
+
+  const validationSchema = Yup.object({
+    companyName: Yup.string().required("Required"),
+    address1: Yup.string().required("Required"),
+    address2: Yup.string().required("Required"),
+    city: Yup.string().required("Required"),
+    emirates: Yup.string().required("Required"),
+    country: Yup.string().required("Required"),
+    poBox: Yup.string().required("Required"),
+    email: Yup.string().email("Invalid email address").required("Required"),
+    website: Yup.string().required("Required"),
+    phoneNo: Yup.string().required("Required"),
+    faxNo: Yup.string().required("Required"),
+    noOfEmp: Yup.string().required("Required"),
+    vendorType: Yup.array().min(1).required("Required"),
+    yearOfEst: Yup.string().required("Required"),
+    licenseNo: Yup.string().required("Required"),
+    licenseExpDate: Yup.string().required("Required"),
+    // licenseCopy: Yup.string().required("Required"),
+    //orgStructure: Yup.string().required("Required"),
+  });
+
+  const handleFileChange = (e, formikProps) => {
+    formikProps.handleChange(e);
+
+    if (e.target.files.length) {
+      uploadFileToServer(
+        e,
+        vendor,
+        e.target.name,
+        dispatch,
+        token,
+        "companyInfo"
+      );
+    }
+  };
+
+  const onSubmit = (values) => {
+    let data = Object.assign({}, values);
+    let pattern = /\.[0-9a-z]+$/i;
+    if (data.orgStructure && data.orgStructure.includes("\\")) {
+      // _.set(
+      //   data,
+      //   "orgStructure",
+      //   "orgStructure" + data.orgStructure.match(pattern)[0]
+      // );
+      data = addFileName(data, "orgStructure");
+      // _.set(
+      //   data,
+      //   "licenseCopy",
+      //   "licenseCopy" + data.licenseCopy.match(pattern)[0]
+      // );
+      data = addFileName(data, "licenseCopy");
+    }
+    // let status =
+    //   vendor.length && _.get(vendor[0].companyInfo, "status", false)
+    //     ? _.get(vendor[0].companyInfo, "status", false)
+    //     : "";
+    // if (status === "incomplete") {
+    //   data.status = "under review";
+    // } else {
+    //   data.status = "saved";
+    // }
+    data.status = addStatus(vendor, "companyInfo");
+    const reqData = {
+      companyInfo: data,
+      initRegId: user._id,
+      vendorId: vendor.length > 0 ? vendor[0]._id : "",
+      companyId: activeCompany.activeCompany._id,
+    };
+
+    dispatch(initialSave(reqData, token, change, "1"));
+  };
   return (
     <Container className={classes.mainContainer}>
       <Grid container>
@@ -53,62 +153,10 @@ const dispatch = useDispatch();
         <Grid item lg={12}>
           <Paper elevation={2} square={true} className={classes.customPaper}>
             <Formik
-              initialValues={{
-                companyName: "",
-                address1: "",
-                address2: "",
-                city: "",
-                emirates: "",
-                country: "",
-                poBox: "",
-                email: "",
-                website: "",
-                phoneNo: "",
-                faxNo: "",
-                noOfEmp: "",
-                vendorType: "",
-                yearOfEst: "",
-                licenseNo: "",
-                licenseExpDate: "",
-                licenseCopy: "",
-                orgStructure: "",
-                sisCompanies: [""],
-              }}
-              validationSchema={Yup.object({
-                companyName: Yup.string().required("Required"),
-                address1: Yup.string().required("Required"),
-                address2: Yup.string().required("Required"),
-                city: Yup.string().required("Required"),
-                emirates: Yup.string().required("Required"),
-                country: Yup.string().required("Required"),
-                poBox: Yup.string().required("Required"),
-                email: Yup.string()
-                  .email("Invalid email address")
-                  .required("Required"),
-                website: Yup.string().required("Required"),
-                phoneNo: Yup.string().required("Required"),
-                faxNo: Yup.string().required("Required"),
-                noOfEmp: Yup.string().required("Required"),
-                vendorType: Yup.string().required("Required"),
-                yearOfEst: Yup.string().required("Required"),
-                licenseNo: Yup.string().required("Required"),
-                licenseExpDate: Yup.string().required("Required"),
-                licenseCopy: Yup.string().required("Required"),
-                orgStructure: Yup.string().required("Required"),
-                sisCompanies: Yup.string().required("Required"),
-            })}
-  //             onSubmit= (values) => {
-  //     values.sisCompanies = sisterCompanies;
-  //     const reqData = {
-  //       companyInfo: values,
-  //       initRegId: user._id,
-  //       vendorId: vendor.length > 0 ? vendor[0]._id : "",
-  //       companyId: activeCompany.activeCompany._id,
-  //     };
-
-  //     dispatch(initialSave(reqData, token, HandleChange, "1"));
-  //   },
-  // });
+              enableReinitialize
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={onSubmit}
             >
               {(formikProps) => (
                 <Form
@@ -286,9 +334,14 @@ const dispatch = useDispatch();
                             <FormLabel key={type}>
                               <Field
                                 name="vendorType"
+                                value={type}
                                 as={Checkbox}
                                 label={type}
                                 color="primary"
+                                checked={
+                                  formikProps.values.vendorType &&
+                                  formikProps.values.vendorType.includes(type)
+                                }
                               ></Field>
                               {type}
                             </FormLabel>
@@ -365,6 +418,7 @@ const dispatch = useDispatch();
                           name="licenseCopy"
                           as={TextField}
                           type="file"
+                          onChange={(e) => handleFileChange(e, formikProps)}
                           className={classes.inputNoBorder}
                         />
                         <ErrorMessage
@@ -389,6 +443,7 @@ const dispatch = useDispatch();
                           name="orgStructure"
                           type="file"
                           as={TextField}
+                          onChange={(e) => handleFileChange(e, formikProps)}
                           className={classes.inputNoBorder}
                         />
                         <ErrorMessage
@@ -398,7 +453,6 @@ const dispatch = useDispatch();
                         />
                       </FormControl>
 
-                      
                       <FormControl className={classes.formControl} fullWidth>
                         <FieldArray
                           name="sisCompanies"
@@ -469,7 +523,7 @@ const dispatch = useDispatch();
                     </Grid>
 
                     <Grid item lg={12} className={classes.saveBtn}>
-                      <Button variant="contained" color="primary">
+                      <Button type="submit" variant="contained" color="primary">
                         Save and Continue
                       </Button>
                     </Grid>

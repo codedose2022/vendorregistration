@@ -57,64 +57,62 @@ export const addNewCompany = (
   }
 };
 
-export const initialSave = (reqData, token, HandleChange,newVal) => async (
+export const initialSave = (reqData, token, change, newVal) => async (
   dispatch
 ) => {
   try {
     const { data } = await api.initialSave(reqData, token);
     const successStatusCd = _.get(data, "status", "");
     if (successStatusCd === responseStatusConstants.SUCCESS) {
-      console.log("success");
-      if(newVal==="8")
-      {
+      if (newVal === "8") {
         dispatch(submit(reqData.vendorId, token));
+      } else {
+        console.log(data)
+        console.log("icecream")
+        change(null, parseInt(newVal));
+        
       }
-      else{
-        HandleChange(null,parseInt(newVal));
-      }
-     
-     // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
+      dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
     } else {
       console.log("no success");
       //errCallback(_.get(data, "message", ""));
     }
   } catch (error) {
+    console.log(error.message);
     console.log("catch");
     //errCallback("Please try again later");
   }
 };
 
-export const submit = (reqData, token) => async (
-  dispatch
-) => {
+export const submit = (reqData, token) => async (dispatch) => {
   try {
     console.log(reqData);
     const { data } = await api.submit(reqData, token);
     const successStatusCd = _.get(data, "status", "");
     if (successStatusCd === responseStatusConstants.SUCCESS) {
       console.log("success");
-     // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
+      
+      // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
     } else {
       console.log("no success");
       //errCallback(_.get(data, "message", ""));
     }
   } catch (error) {
-    console.log("catch",error);
+    console.log("catch", error);
     //errCallback("Please try again later");
   }
 };
-
 
 export const uploadFile = (reqData, token, vendorId, fieldName) => async (
   dispatch
 ) => {
   try {
-    console.log(reqData, token, vendorId, fieldName)
-    const { data } = await api.uploadFile(reqData, token,vendorId, fieldName);
+    console.log(reqData, token, vendorId, fieldName);
+    const { data } = await api.uploadFile(reqData, token, vendorId, fieldName);
     const successStatusCd = _.get(data, "status", "");
     if (successStatusCd === responseStatusConstants.SUCCESS) {
       console.log("success");
-     // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
+      // dispatch({ type: "ALL_VENDORS", payload: data.vendorRegistrationsList });
     } else {
       console.log("no success");
       //errCallback(_.get(data, "message", ""));

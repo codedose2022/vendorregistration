@@ -21,16 +21,87 @@ import { useDispatch } from "react-redux";
 import { initialSave } from "../../../Actions/vendorRegActions";
 import { useHandleChange } from "../../../Context/TabsContext";
 import { UserContext } from "../../../Context/UserContext";
-import { uploadFileToServer } from "../../../Helpers/FileUpload";
+import { addFileName,uploadFileToServer } from "../../../Helpers/FileUpload";
 
 const Tax = () => {
   const classes = useStyles();
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { user, activeCompany, token, vendor } = useContext(UserContext);
   const [isTax, setisTax] = useState("");
-const HandleChange = useHandleChange();
+  const HandleChange = useHandleChange();
   const handleChange = (event) => {
     setisTax(event.target.value);
+  };
+
+  const handleFileChange = (e, formikProps) => {
+    formikProps.handleChange(e);
+
+    if (e.target.files.length) {
+      uploadFileToServer(
+        e,
+        vendor,
+        e.target.name,
+        dispatch,
+        token,
+        "taxInfo"
+      );
+    }
+  };
+
+  const initialValues = {
+    taxRegistered: "",
+    vatNo: "",
+    vatCopy: "",
+    tinNo: "",
+  };
+
+  const validationSchema = Yup.object({
+    // taxRegistered: Yup.string().required("Please select your answer"),
+    // vatNo: Yup.string().when("isTax", {
+    //   is: (value) => isTax === "yes",
+    //   then: Yup.string().required("Required"),
+    // }),
+    // vatCopy: Yup.string().when("isTax", {
+    //   is: (value) => isTax === "yes",
+    //   then: Yup.string().required("Required"),
+    // }),
+    // tinNo: Yup.string().when("isTax", {
+    //   is: (value) => isTax === "yes",
+    //   then: Yup.string().required("Required"),
+    // }),
+  });
+  const onSubmit = (values) => {
+    let data = Object.assign({}, values);
+    // let pattern = /\.[0-9a-z]+$/i;
+    // if (data.vatCopy && data.vatCopy.includes("\\")) {
+    //   _.set(
+    //     data,
+    //     "vatCopy",
+    //     "vatCopy" + data.vatCopy.match(pattern)[0]
+    //   );
+    // }
+    if (data.vatCopy && data.vatCopy.includes("\\")) {
+      data = addFileName(data, "vatCopy");
+    }
+    const reqData = {};
+
+    //  data.status = addStatus(vendor,'companyInfo' );
+    if (isTax === "yes") {
+      reqData = {
+        taxInfo: data,
+        initRegId: user._id,
+        vendorId: vendor.length > 0 ? vendor[0]._id : "",
+        companyId: activeCompany.activeCompany._id,
+      };
+    } else {
+      reqData = {
+        taxInfo: { taxRegistered: "no" },
+        initRegId: user._id,
+        vendorId: vendor.length > 0 ? vendor[0]._id : "",
+        companyId: activeCompany.activeCompany._id,
+      };
+    }
+    dispatch(initialSave(reqData, token, HandleChange, "3"));
   };
 
   return (
@@ -44,48 +115,13 @@ const HandleChange = useHandleChange();
         <Grid item lg={12} xs={12}>
           <Paper elevation={2} square={true} className={classes.customPaper}>
             <Formik
-              initialValues={{
-                taxRegistered: "",
-                vatNo: "",
-                vatCopy: "",
-                tinNo: "",
-              }}
-              validationSchema={Yup.object({
-                taxRegistered: Yup.string().required(
-                  "Please select your answer"
-                ),
-                vatNo: Yup.string().when("isTax", {
-                  is: (value) => isTax === "yes",
-                  then: Yup.string().required("Required"),
-                }),
-                vatCopy: Yup.string().when("isTax", {
-                  is: (value) => isTax === "yes",
-                  then: Yup.string().required("Required"),
-                }),
-                tinNo: Yup.string().when("isTax", {
-                  is: (value) => isTax === "yes",
-                  then: Yup.string().required("Required"),
-                }),
-              })}
- /*             const onSubmit = (values) => {
-    if (isTax === "yes") {
-      const reqData = {
-        taxInfo: values,
-        initRegId: user._id,
-        vendorId: vendor.length > 0 ? vendor[0]._id : "",
-        companyId: activeCompany.activeCompany._id,
-      };
-      dispatch(initialSave(reqData, token, HandleChange, "3"));
-    }
-    HandleChange(null, 3);
-  };
-  */
+              enableReinitialize
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={onSubmit}
             >
               {(formikProps) => (
-                <Form
-                  className={classes.companyForm}
-                  onSubmit={formikProps.handleSubmit}
-                >
+                <Form className={classes.companyForm}>
                   <Grid container>
                     <Grid item lg={12} xs={12}>
                       <FormControl
@@ -172,6 +208,7 @@ const HandleChange = useHandleChange();
                               name="vatCopy"
                               as={TextField}
                               type="file"
+                              onChange={(e) => handleFileChange(e, formikProps)}
                               className={classes.inputNoBorder}
                             />
                             <ErrorMessage

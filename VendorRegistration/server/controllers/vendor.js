@@ -36,9 +36,11 @@ export const initialSave = async (req, res) => {
       let updates = {};
       const entries = Object.keys(reqValue);
       for (let i = 0; i < entries.length; i++) {
-        updates[`${reqKey}.${entries[i]}`] = Object.values(reqValue)[i];
+       // updates[entries[i]] = Object.values(keyValuePair)[i];
+       updates[`${reqKey}.${entries[i]}`] = Object.values(reqValue)[i];
       }
-      await vendorRegistrations.findOneAndUpdate(
+      console.log(updates)
+      await vendorRegistrations.updateOne(
         {
           _id: vendorId,
         },

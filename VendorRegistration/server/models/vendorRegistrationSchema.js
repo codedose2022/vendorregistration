@@ -41,7 +41,7 @@ const vendorRegistrationSchema = mongoose.Schema(
     },
     otherInfo: otherInfoSchema.schema,
   },
-  { minimize: false },
+  // { minimize: false },
   { timestamps: true }
 );
 

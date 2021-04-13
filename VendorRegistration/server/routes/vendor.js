@@ -15,7 +15,7 @@ let upload = multer({ storage, fileFilter });
 
 router.post("/initialSave", auth, initialSave);
 
-router.post("/submit", submit);
+router.post("/submit", auth, submit);
 
 router.post("/getAllRegistrations", auth, getAllRegistrations);
 

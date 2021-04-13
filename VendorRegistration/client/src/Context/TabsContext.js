@@ -21,6 +21,7 @@ export function TabsContext({ children }) {
   const state = useSelector((state) => state);
   const [value, setValue] = useState(_.get(state, "ChangeTabs.selectedTab", 0));
   const handleChange = (event, newValue) => {
+    console.log(newValue);
     setValue(newValue);
     dispatch({ type: "SIDEBAR_VENDOR_TABS_CHANGE", payload: newValue });
   };

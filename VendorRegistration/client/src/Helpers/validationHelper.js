@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export const validateField = (fieldName, value, name) => {
   let error = "";
   switch (fieldName) {
@@ -31,3 +33,19 @@ export const validateField = (fieldName, value, name) => {
 export const isAdminOrPr = (department) => {
   return ["Admin", "Procurement"].includes(department);
 };
+
+export const addStatus = (vendor, sectionName) => {
+  let status =
+    vendor.length && _.get(vendor[0][sectionName], "status", false)
+      ? _.get(vendor[0][sectionName], "status", false)
+      : "";
+  if (status === "incomplete") {
+    status = "under review";
+  } else {
+    status = "saved";
+  }
+  return status;
+};
+
+
+

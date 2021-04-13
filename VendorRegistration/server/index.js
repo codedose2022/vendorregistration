@@ -27,16 +27,16 @@ app.use("/register", register);
 app.use("/auth", authentication);
 app.use("/applications", application);
 
-app.use(async (req, res, next) => {
-  next(createError.NotFound());
-});
-app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  res.send({
-    error: {
-      status: err.status || 500,
-    },
-  });
-});
+// app.use(async (req, res, next) => {
+//   next(createError.NotFound());
+// });
+// app.use((err, req, res, next) => {
+//   res.status(err.status || 500);
+//   res.send({
+//     error: {
+//       status: err.status || 500,
+//     },
+//   });
+// });
 
 initMongodb(app);

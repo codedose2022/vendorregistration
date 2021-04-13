@@ -10,7 +10,7 @@ import {
   MenuItem,
   InputLabel,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import useStyles from "../VendorRegistrationStyles";
 import { FieldArray, Formik, Field, Form, ErrorMessage } from "formik";
 import { Select } from "formik-material-ui";
@@ -19,9 +19,85 @@ import AddIcon from "@material-ui/icons/Add";
 import Close from "@material-ui/icons/Close";
 import Fab from "@material-ui/core/Fab";
 import countries from "../../../Constants/Countries";
+import { initialSave } from "../../../Actions/vendorRegActions";
+import _ from "lodash";
+import { useDispatch } from "react-redux";
+import { useHandleChange } from "../../../Context/TabsContext";
+import { UserContext } from "../../../Context/UserContext";
+import { addStatus } from "../../../Helpers/validationHelper";
 
 const Owners = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const change = useHandleChange();
+  const { user, activeCompany, token, vendor } = useContext(UserContext);
+  let owners = [];
+  vendor.length &&
+    vendor[0].ownerInfo.owners.map((owner) => {
+      owners.push({
+        name: owner.name.length ? owner.name[0] : "",
+        designation: owner.designation.length ? owner.designation[0] : "",
+        percentOfShare: owner.percentOfShare.length
+          ? owner.percentOfShare[0]
+          : "",
+        nationality: owner.nationality.length ? owner.nationality[0] : "",
+        tel: owner.tel.length ? owner.tel[0] : "",
+        mob: owner.mob.length ? owner.mob[0] : "",
+        email: owner.email.length ? owner.email[0] : "",
+      });
+    });
+
+  const initValues = {
+    owners: [
+      {
+        name: "",
+        designation: "",
+        percentOfShare: "",
+        nationality: "",
+        tel: "",
+        mob: "",
+        email: "",
+      },
+    ],
+  };
+  let initialValues =
+    vendor.length && vendor[0].ownerInfo.owners.length
+      ? { owners }
+      : initValues;
+
+  const validationSchema = Yup.object().shape({
+    owners: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string()
+          .min(4, "Name is too short")
+          .required("Name is required"),
+        designation: Yup.string().required("Designation is required"),
+        percentOfShare: Yup.number().positive().integer(),
+        tel: Yup.number().positive().integer().min(10, "Invalid phone number"),
+        mob: Yup.number()
+          .required("Mobile number is required")
+          .positive()
+          .integer()
+          .min(10, "Invalid phone number"),
+        email: Yup.string()
+          .required("Email is required")
+          .email("Invalid email"),
+      })
+    ),
+  });
+
+  const onSubmit = (values) => {
+    let data = Object.assign({}, values);
+    data.status = addStatus(vendor, "ownerInfo");
+    const reqData = {
+      ownerInfo: data,
+      initRegId: user._id,
+      vendorId: vendor.length > 0 ? vendor[0]._id : "",
+      companyId: activeCompany.activeCompany._id,
+    };
+
+    dispatch(initialSave(reqData, token, change, "2"));
+  };
 
   return (
     <Container className={classes.mainContainer}>
@@ -34,50 +110,13 @@ const Owners = () => {
         <Grid item xs={12}>
           <Paper elevation={2} square={true} className={classes.customPaper}>
             <Formik
-              initialValues={{
-                owners: [
-                  {
-                    name: "",
-                    designation: "",
-                    percentOfShare: "",
-                    nationality: "",
-                    tel: "",
-                    mob: "",
-                    email: "",
-                  },
-                ],
-              }}
-              validationSchema={Yup.object().shape({
-                owners: Yup.array().of(
-                  Yup.object().shape({
-                    name: Yup.string()
-                      .min(4, "Name is too short")
-                      .required("Name is required"),
-                    designation: Yup.string().required(
-                      "Designation is required"
-                    ),
-                    percentOfShare: Yup.number().positive().integer(),
-                    tel: Yup.number()
-                      .positive()
-                      .integer()
-                      .min(10, "Invalid phone number"),
-                    mob: Yup.number()
-                      .required("Mobile nummber is required")
-                      .positive()
-                      .integer()
-                      .min(10, "Invalid phone number"),
-                    email: Yup.string()
-                      .required("Email is required")
-                      .email("Invalid email"),
-                  })
-                ),
-              })}
+              enableReinitialize
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={onSubmit}
             >
               {(formikProps) => (
-                <Form
-                  onSubmit={formikProps.handleSubmit}
-                  className={classes.companyForm}
-                >
+                <Form className={classes.companyForm}>
                   <FieldArray name="owners">
                     {(fieldArrayProps) => (
                       <>

@@ -17,7 +17,8 @@ const ownerInfoSchema = mongoose.Schema(
     mob: [Number],
     email: [String],
 
-  },{ minimize: false },
+  },
+  // { minimize: false },
   { timestamps: true }
 );
 

@@ -10,7 +10,6 @@ const vendor =  (state = [], action) => {
           ...state,
           vendors:action.payload,
         };
-       
       default:
         return {...state} ;
     }

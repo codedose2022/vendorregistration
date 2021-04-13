@@ -20,7 +20,8 @@ const bankInfoSchema = mongoose.Schema(
       type: String,
       default:"saved",
     },
-  },{ minimize: false },
+  },
+  // { minimize: false },
   { timestamps: true }
 );
 

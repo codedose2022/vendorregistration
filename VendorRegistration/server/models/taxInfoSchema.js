@@ -9,14 +9,15 @@ const taxInfoSchema = mongoose.Schema(
       type:Object,
       default:{}
     },
+    taxRegistered:String,
     vatNo: [String],
     vatCopy: String,
     tinNo: [Number],
     status: {
       type: String,
-      default:"saved",
     },
-  },{ minimize: false },
+  },
+  // { minimize: false },
   { timestamps: true }
 );
 
